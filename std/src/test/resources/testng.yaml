@@ -1,0 +1,5 @@
+parallel: none
+tests:
+ - name: tech.onega.jvm.std
+   preserveOrder: true
+   packages: ["tech.onega.jvm.std.*"]

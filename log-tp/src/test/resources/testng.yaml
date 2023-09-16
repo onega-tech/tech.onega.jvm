@@ -1,0 +1,5 @@
+parallel: none
+tests:
+ - name: tech.onega.jvm.log_integration
+   preserveOrder: true
+   packages: ["org.apache.commons.logging", "org.apache.log4j", "org.slf4j"]

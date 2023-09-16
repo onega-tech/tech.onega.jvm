@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>tech.onega.jvm</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>0-SNAPSHOT</version>
+
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project-root-dir>${project.basedir}</project-root-dir>
+    <version.java>17</version.java>
+    <version.maven-compiler-plugin>3.11.0</version.maven-compiler-plugin>
+    <version.maven-source-plugin>3.3.0</version.maven-source-plugin>
+    <version.maven-deploy-plugin>3.1.1</version.maven-deploy-plugin>
+    <version.maven-surefire-plugin>3.1.2</version.maven-surefire-plugin>
+    <version.spotless-maven-plugin>2.39.0</version.spotless-maven-plugin>
+    <version.testng>7.8.0</version.testng>
+  </properties>
+
+  <modules>
+    <module>std</module>
+    <module>log-tp</module>
+    <module>jdbc</module>
+    <module>jdbc-pg</module>
+  </modules>
+
+
+  <dependencyManagement>
+
+    <dependencies>
+
+      <!-- tech.onega [BEGIN] -->
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>std</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>log-tp</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>jdbc</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>jdbc-pg</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <!-- tech.onega [END] -->
+
+      <!-- testing [BEGIN] -->
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${version.testng}</version>
+      </dependency>
+      <!-- testing [END] -->
+    </dependencies>
+
+  </dependencyManagement>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${version.spring}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven-surefire-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven-deploy-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.maven-compiler-plugin}</version>
+          <configuration>
+            <source>${version.java}</source>
+            <target>${version.java}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.maven-source-plugin}</version>
+        </plugin>
+        <!-- spotless [begin] -->
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${version.spotless-maven-plugin}</version>
+          <configuration>
+            <java>
+              <importOrder>
+                <order>java,javax,org,com</order>
+              </importOrder>
+              <removeUnusedImports />
+              <eclipse>
+                <file>${project-root-dir}/codestyle.xml</file>
+              </eclipse>
+            </java>
+          </configuration>
+        </plugin>
+        <!-- spotless [end] -->
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${version.java}</source>
+          <target>${version.java}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>

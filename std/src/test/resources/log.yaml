@@ -1,0 +1,12 @@
+appenders:
+  console:
+    class: tech.onega.jvm.std.log.appenders.console.ConsoleAppender
+  file:
+    class: tech.onega.jvm.std.log.appenders.file.FileAppender
+    fileName: target/stdlog/test.log
+    maxBackups: 5
+    maxFileSizeKb: 512
+    gzipLevel: 9
+loggers:
+  default: info:[console], debug:[console], error:[console]
+  org.apache: debug:[null]

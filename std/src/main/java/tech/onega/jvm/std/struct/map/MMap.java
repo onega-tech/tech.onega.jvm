@@ -1,0 +1,466 @@
+package tech.onega.jvm.std.struct.map;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import tech.onega.jvm.std.annotation.Copy;
+import tech.onega.jvm.std.annotation.Immutable;
+import tech.onega.jvm.std.annotation.Mutable;
+import tech.onega.jvm.std.annotation.Self;
+import tech.onega.jvm.std.lang.Equals;
+import tech.onega.jvm.std.lang.Lambda;
+import tech.onega.jvm.std.struct.hash.KV;
+import tech.onega.jvm.std.struct.hash.table.HashTable;
+import tech.onega.jvm.std.struct.iterable.IterableUtils;
+import tech.onega.jvm.std.struct.iterator.IteratorUtils;
+import tech.onega.jvm.std.struct.list.IList;
+import tech.onega.jvm.std.struct.list.MList;
+import tech.onega.jvm.std.struct.set.ISet;
+import tech.onega.jvm.std.struct.stream.StreamUtils;
+import tech.onega.jvm.std.struct.vector.MVector;
+import tech.onega.jvm.std.struct.vector.VectorUtils;
+
+@Mutable
+final public class MMap<K, V> implements MVector<KV<K, V>>, Cloneable {
+
+  private static final long serialVersionUID = 1L;
+
+  public static <K, V> Collector<KV<K, V>, ?, MMap<K, V>> collector() {
+    return collector(VectorUtils.DEFAULT_INITIAL_CAPACITY);
+  }
+
+  public static <K, V> Collector<KV<K, V>, ?, MMap<K, V>> collector(final int initialSize) {
+    return StreamUtils.selfCollector(() -> MMap.<K, V>create(initialSize, VectorUtils.DEFAULT_MAX_CAPACITY), MMap::add);
+  }
+
+  public static <K, V> MMap<K, V> copy(final Iterable<? extends KV<K, V>> iterable) {
+    return new MMap<K, V>(VectorUtils.DEFAULT_INITIAL_CAPACITY, VectorUtils.DEFAULT_MAX_CAPACITY).addAll(iterable);
+  }
+
+  public static <K, V> MMap<K, V> copy(final java.util.Map<K, V> map) {
+    return new MMap<K, V>(map.size(), VectorUtils.DEFAULT_MAX_CAPACITY)
+      .addStreamEntry(map.entrySet().stream());
+  }
+
+  public static <K, V> MMap<K, V> create() {
+    return new MMap<>(VectorUtils.DEFAULT_INITIAL_CAPACITY, VectorUtils.DEFAULT_MAX_CAPACITY);
+  }
+
+  public static <K, V> MMap<K, V> create(final int initialCapacity) {
+    return new MMap<>(initialCapacity, VectorUtils.DEFAULT_MAX_CAPACITY);
+  }
+
+  public static <K, V> MMap<K, V> create(final int initialCapacity, final int maxCapacity) {
+    return new MMap<>(initialCapacity, maxCapacity);
+  }
+
+  public static <K, V> MMap<K, V> empty() {
+    return new MMap<>(0, VectorUtils.DEFAULT_MAX_CAPACITY);
+  }
+
+  @SafeVarargs
+  public static <K, V> MMap<K, V> of(final KV<K, V>... keyValues) {
+    return new MMap<K, V>(keyValues.length, VectorUtils.DEFAULT_MAX_CAPACITY).addAll(keyValues);
+  }
+
+  public static <K, V> MMap<K, V> of(@Immutable @Copy final KV<K, V>[] keyValues, final int limit, final int offset) {
+    return new MMap<K, V>(limit, VectorUtils.DEFAULT_MAX_CAPACITY).addAll(keyValues, limit, offset);
+  }
+
+  public static <K, V> MMap<K, V> of(final Stream<? extends KV<K, V>> stream) {
+    return new MMap<K, V>(VectorUtils.DEFAULT_INITIAL_CAPACITY, VectorUtils.DEFAULT_MAX_CAPACITY).addAll(stream);
+  }
+
+  private HashTable<K, V> data;
+
+  private int capacity;
+
+  private int hashCode = 0;
+
+  private boolean hashCodeReseted = true;
+
+  private final int maxCapacity;
+
+  private MMap(final int initialCapacity, final int maxCapacity) {
+    this.maxCapacity = maxCapacity;
+    this.capacity = initialCapacity;
+    data = HashTable.lifo(initialCapacity, maxCapacity);
+  }
+
+  @Self
+  public MMap<K, V> add(final K key, final V value) {
+    return add(KV.of(key, value));
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> add(final KV<K, V> keyValue) {
+    if (keyValue != null) {
+      checkCanAdd(1);
+      data.replace(keyValue);
+      hashCodeReseted = true;
+    }
+    return this;
+  }
+
+  @Override
+  public MMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable) {
+    return addIterator(iterable.iterator());
+  }
+
+  @Override
+  public MMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable, final int limit) {
+    return addIterator(IteratorUtils.limit(iterable.iterator(), limit));
+  }
+
+  @Override
+  public MMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable, final int limit, final int offset) {
+    return addIterator(IteratorUtils.limitOffset(iterable.iterator(), limit, offset));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  @Self
+  public MMap<K, V> addAll(final KV<K, V>... keyValues) {
+    return addAll(keyValues, keyValues.length, 0);
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> addAll(final KV<K, V>[] keyValues, final int limit) {
+    return addAll(keyValues, limit, 0);
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> addAll(final KV<K, V>[] keyValues, final int limit, final int offset) {
+    if (keyValues != null && keyValues.length > 0) {
+      checkCanAdd(limit);
+      for (int i = offset; i < limit + offset; i++) {
+        data.replace(keyValues[i]);
+      }
+      hashCodeReseted = true;
+    }
+    return this;
+  }
+
+  @Override
+  public MMap<K, V> addAll(final Stream<? extends KV<K, V>> stream) {
+    return addIterator(stream.iterator());
+  }
+
+  @Self
+  public MMap<K, V> addIterator(final Iterator<? extends KV<K, V>> iterator) {
+    while (iterator.hasNext()) {
+      checkCanAdd(1);
+      data.replace(iterator.next());
+    }
+    hashCodeReseted = true;
+    return this;
+  }
+
+  @Self
+  public MMap<K, V> addStreamEntry(final Stream<? extends Map.Entry<K, V>> stream) {
+    final Iterator<? extends Map.Entry<K, V>> iterator = stream.iterator();
+    while (iterator.hasNext()) {
+      checkCanAdd(1);
+      data.replace(KV.of(iterator.next()));
+    }
+    hashCodeReseted = true;
+    return this;
+  }
+
+  @Override
+  @Copy
+  public Collection<KV<K, V>> asCollection() {
+    return VectorUtils.wrapToCollection(this);
+  }
+
+  @Override
+  public int capacity() {
+    return Math.max(capacity, data.size());
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> capacity(final int newCapacity) {
+    if (capacity() != newCapacity) {
+      if (newCapacity < 0 || newCapacity > maxCapacity()) {
+        throw new OutOfMemoryError(String.format("Can't set capacity %s. newCapacity:%s > maxCapacity:%s",
+          this.getClass(), newCapacity, maxCapacity()));
+      }
+      if (newCapacity < data.size()) {
+        data.size(newCapacity);
+        hashCodeReseted = true;
+      }
+      capacity = newCapacity;
+    }
+    return this;
+  }
+
+  private void checkCanAdd(final int count) {
+    if (size() + count > maxCapacity) {
+      throw new IllegalStateException(
+        String.format("Can't add %s. Cause size:%s, maxCapacity:%s", count, size(), maxCapacity));
+    }
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> clear() {
+    data.clear();
+    hashCodeReseted = true;
+    return this;
+  }
+
+  @Override
+  public Object clone() {
+    return cloneMap();
+  }
+
+  public MMap<K, V> cloneMap() {
+    return new MMap<K, V>(size(), maxCapacity).addAll(this);
+  }
+
+  @Override
+  public boolean contains(final KV<K, V> kv) {
+    final KV<K, V> e = data.get(kv.key);
+    return e == null ? false : Equals.yes(e.value, kv.value);
+  }
+
+  public boolean containsKey(final K key) {
+    return data.contains(key);
+  }
+
+  public boolean containsValue(final V value) {
+    return data.stream().filter(n -> Equals.yes(n.value(), value)).findAny().isPresent();
+  }
+
+  public IMap<K, V> destroy() {
+    final IMap<K, V> result = IMap.wrap(data.destroy());
+    data = null;
+    this.hashCode = 0;
+    this.hashCodeReseted = false;
+    this.capacity = 0;
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    return VectorUtils.equals(this, obj);
+  }
+
+  @Override
+  public KV<K, V> first() {
+    return data.first();
+  }
+
+  public V get(final K key) {
+    return get(key, null);
+  }
+
+  public V get(final K key, final V defaultValue) {
+    final KV<K, V> kv = data.get(key);
+    return kv == null ? defaultValue : kv.value;
+  }
+
+  public <E extends Throwable> V getOrSet(final K key, final Lambda.Supplier<V, E> valueFactory) throws E {
+    final KV<K, V> kv = data.get(key);
+    if (kv == null) {
+      final V val = valueFactory.invoke();
+      add(key, val);
+      return val;
+    }
+    return kv.value;
+  }
+
+  @Override
+  public int hashCode() {
+    if (isEmpty()) {
+      return 0;
+    }
+    else if (hashCodeReseted) {
+      hashCode = data.hashCode();
+      hashCodeReseted = false;
+    }
+    return hashCode;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return data.isEmpty();
+  }
+
+  @Override
+  public boolean isFull() {
+    return size() == maxCapacity();
+  }
+
+  @Override
+  public Iterator<KV<K, V>> iterator() {
+    return data.iterator();
+  }
+
+  @Copy
+  public IList<K> keys() {
+    return data
+      .stream()
+      .map(KV::key)
+      .collect(IList.collector(size()));
+  }
+
+  @Copy
+  public ISet<K> keySet() {
+    return data
+      .stream()
+      .map(KV::key)
+      .collect(ISet.collector(size()));
+  }
+
+  @Copy
+  public IList<KV<K, V>> keyValues() {
+    return data
+      .stream()
+      .collect(IList.collector(size()));
+  }
+
+  @Override
+  public int maxCapacity() {
+    return maxCapacity;
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> remove(final KV<K, V> keyValue) {
+    return removeKey(keyValue.key());
+  }
+
+  @Self
+  public <E extends Throwable> MMap<K, V> remove(final Lambda.Function<KV<K, V>, Boolean, E> filter) throws E {
+    final MList<K> forRemove = MList.create();
+    for (final KV<K, V> kv : this) {
+      if (!filter.invoke(kv)) {
+        forRemove.add(kv.key);
+      }
+    }
+    for (final K k : forRemove) {
+      data.remove(k);
+    }
+    return this;
+  }
+
+  @Override
+  public MMap<K, V> removeAll(final Iterable<? extends KV<K, V>> kvs) {
+    for (final KV<K, V> kv : kvs) {
+      removeKey(kv.key);
+    }
+    return this;
+  }
+
+  @Self
+  public MMap<K, V> removeKey(final K key) {
+    data.remove(key);
+    hashCodeReseted = true;
+    return this;
+  }
+
+  @Override
+  public int size() {
+    return data.size();
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> size(final int newSize) {
+    data.size(newSize);
+    hashCodeReseted = true;
+    return this;
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> sort(final Comparator<KV<K, V>> comparator) {
+    this.data = data
+      .stream()
+      .sorted(comparator)
+      .collect(HashTable.collector(HashTable.lifo(size(), maxCapacity)));
+    return this;
+  }
+
+  @Override
+  public Spliterator<KV<K, V>> spliterator() {
+    return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.SIZED);
+  }
+
+  @Override
+  @Copy
+  public Stream<KV<K, V>> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  @Copy
+  public Object[] toArray() {
+    return IterableUtils.toArray((Iterable<Object>) (Iterable<?>) this, size(), 0, Object.class);
+  }
+
+  @Override
+  public KV<K, V>[] toArray(Function<Integer, KV<K, V>[]> arrayFactory) {
+    var result = arrayFactory.apply(this.size());
+    var i = 0;
+    for (var v : this) {
+      result[i++] = v;
+    }
+    return result;
+  }
+
+  @Override
+  @Copy
+  public IList<KV<K, V>> toIList() {
+    return isEmpty() ? IList.empty() : stream().collect(IList.collector(size()));
+  }
+
+  @Copy
+  public IMap<K, V> toIMap() {
+    return IMap.wrap(data.toImmutable());
+  }
+
+  @Copy
+  public Map<K, V> toMap() {
+    return data.stream()
+      .collect(StreamUtils.selfCollector(
+        () -> new LinkedHashMap<>(size()),
+        (a, v) -> a.put(v.key(), v.value())));
+  }
+
+  @Override
+  public String toString() {
+    return IterableUtils.toString(this);
+  }
+
+  @Override
+  @Self
+  public MMap<K, V> trim() {
+    this.capacity = data.size();
+    data.trim();
+    return this;
+  }
+
+  @Copy
+  public IList<V> values() {
+    return isEmpty() ? IList.empty()
+      : stream()
+        .map(KV::value)
+        .collect(IList.collector(size()));
+  }
+
+}
