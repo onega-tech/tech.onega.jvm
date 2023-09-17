@@ -1,4 +1,4 @@
-package tech.onega.jvm.jdbc.pg;
+package tech.onega.jvm.pg;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ import tech.onega.jvm.std.log.Loggers;
 import tech.onega.jvm.std.validate.Check;
 
 @ThreadSafe
-public class JdbcClientPostgres implements JdbcClient {
+public class PgClient implements JdbcClient {
 
   public record Config(
     @NotBlank String host,
@@ -38,7 +38,7 @@ public class JdbcClientPostgres implements JdbcClient {
     @Nullable Set<String> migrationResources) {
   }
 
-  private static final Logger LOGGER = Loggers.find(JdbcClientPostgres.class);
+  private static final Logger LOGGER = Loggers.find(PgClient.class);
 
   /**
    * @see https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby
@@ -63,7 +63,7 @@ public class JdbcClientPostgres implements JdbcClient {
     hikariConfig.setMaxLifetime(Duration.ofMinutes(60).toMillis());
     hikariConfig.setReadOnly(false);
     hikariConfig.setConnectionTestQuery("SELECT 1");
-    hikariConfig.setPoolName("%s|%s|%s|%s".formatted(JdbcClientPostgres.class.getName(), config.host(), config.port(), config.database()));
+    hikariConfig.setPoolName("%s|%s|%s|%s".formatted(PgClient.class.getName(), config.host(), config.port(), config.database()));
     hikariConfig.setMaximumPoolSize(config.maximumPoolSize());
     hikariConfig.setTransactionIsolation(String.valueOf(Connection.TRANSACTION_READ_COMMITTED));
     if (meterRegistry != null) {
@@ -78,11 +78,11 @@ public class JdbcClientPostgres implements JdbcClient {
 
   private final HikariDataSource dataSource;
 
-  public JdbcClientPostgres(final Config config) {
+  public PgClient(final Config config) {
     this(config, null);
   }
 
-  public JdbcClientPostgres(final Config config, @Nullable final MeterRegistry meterRegistry) {
+  public PgClient(final Config config, @Nullable final MeterRegistry meterRegistry) {
     Check.valid(config, "Config is not valid");
     this.config = config;
     this.dataSource = createHikariDataSource(config, meterRegistry);
@@ -104,7 +104,7 @@ public class JdbcClientPostgres implements JdbcClient {
     final Lambda.Function<JdbcRecord, M, Exception> fromRecord) {
     //
     return new JdbcModelMapper<M>(
-      JdbcRecordPostgres::new,
+      PgRecord::new,
       tableName,
       immutableFields,
       mutableFields,
@@ -117,7 +117,7 @@ public class JdbcClientPostgres implements JdbcClient {
   public void exec(final Lambda.Consumer<JdbcConnection, Exception> lambda) {
     try (var connection = this.dataSource.getConnection()) {
       connection.setAutoCommit(true);
-      lambda.invoke(new JdbcConnectionPostgres(connection));
+      lambda.invoke(new PgConnection(connection));
     }
     catch (final Exception e) {
       throw new RuntimeException(e.getMessage(), e);
@@ -130,7 +130,7 @@ public class JdbcClientPostgres implements JdbcClient {
       LOGGER.debug("BEGIN");
       connection.setAutoCommit(false);
       try {
-        lambda.invoke(new JdbcConnectionPostgres(connection));
+        lambda.invoke(new PgConnection(connection));
         LOGGER.debug("COMMIT");
         connection.commit();
       }
@@ -226,7 +226,7 @@ public class JdbcClientPostgres implements JdbcClient {
   public <R> R query(final Lambda.Function<JdbcConnection, R, Exception> lambda) {
     try (var connection = this.dataSource.getConnection()) {
       connection.setAutoCommit(true);
-      return lambda.invoke(new JdbcConnectionPostgres(connection));
+      return lambda.invoke(new PgConnection(connection));
     }
     catch (final Exception e) {
       throw new RuntimeException(e.getMessage(), e);
@@ -239,7 +239,7 @@ public class JdbcClientPostgres implements JdbcClient {
       LOGGER.debug("BEGIN");
       connection.setAutoCommit(false);
       try {
-        final var r = lambda.invoke(new JdbcConnectionPostgres(connection));
+        final var r = lambda.invoke(new PgConnection(connection));
         LOGGER.debug("COMMIT");
         connection.commit();
         return r;

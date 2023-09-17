@@ -1,4 +1,4 @@
-package tech.onega.jvm.jdbc.pg;
+package tech.onega.jvm.pg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,9 +22,9 @@ import tech.onega.jvm.std.log.Loggers;
 import tech.onega.jvm.std.validate.Check;
 
 @NotThreadSafe
-class JdbcConnectionPostgres implements JdbcConnection {
+class PgConnection implements JdbcConnection {
 
-  private static final Logger LOGGER = Loggers.find(JdbcConnectionPostgres.class);
+  private static final Logger LOGGER = Loggers.find(PgConnection.class);
 
   private static void applyStatementParams(final PreparedStatement statement, final Object... params) throws SQLException {
     for (var i = 0; i < params.length; i++) {
@@ -44,7 +44,7 @@ class JdbcConnectionPostgres implements JdbcConnection {
 
   private final Connection connection;
 
-  public JdbcConnectionPostgres(final Connection connection) {
+  public PgConnection(final Connection connection) {
     this.connection = connection;
   }
 
@@ -321,13 +321,13 @@ class JdbcConnectionPostgres implements JdbcConnection {
   @NotNull
   public List<? extends JdbcRecord> query(final String query, final Object... params) {
     LOGGER.debug("SELECT - {}", query);
-    final var result = new ArrayList<JdbcRecordPostgres>();
+    final var result = new ArrayList<PgRecord>();
     try (var statement = this.connection.prepareStatement(query.trim())) {
       applyStatementParams(statement, params);
       try (var resultSet = statement.executeQuery()) {
         final var metaData = resultSet.getMetaData();
         while (resultSet.next()) {
-          final var record = new JdbcRecordPostgres();
+          final var record = new PgRecord();
           for (var columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
             final var columnName = metaData.getColumnName(columnIndex);
             record.set(columnName, resultSet.getObject(columnIndex));

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>tech.onega.jvm</groupId>
@@ -18,15 +20,16 @@
     <version.maven-surefire-plugin>3.1.2</version.maven-surefire-plugin>
     <version.spotless-maven-plugin>2.39.0</version.spotless-maven-plugin>
     <version.testng>7.8.0</version.testng>
+    <version.testcontainers>1.19.0</version.testcontainers>
   </properties>
 
   <modules>
     <module>std</module>
     <module>log-tp</module>
     <module>jdbc</module>
-    <module>jdbc-pg</module>
+    <module>pg</module>
+    <module>pg-test</module>
   </modules>
-
 
   <dependencyManagement>
 
@@ -53,7 +56,13 @@
 
       <dependency>
         <groupId>tech.onega.jvm</groupId>
-        <artifactId>jdbc-pg</artifactId>
+        <artifactId>pg</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>pg-test</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <!-- tech.onega [END] -->
@@ -63,6 +72,11 @@
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
         <version>${version.testng}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.testcontainers}</version>
       </dependency>
       <!-- testing [END] -->
     </dependencies>
@@ -74,9 +88,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>${version.spring}</version>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${version.spring}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

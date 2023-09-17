@@ -11,7 +11,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>jdbc-pg</artifactId>
+  <artifactId>pg</artifactId>
   <packaging>jar</packaging>
 
   <properties>

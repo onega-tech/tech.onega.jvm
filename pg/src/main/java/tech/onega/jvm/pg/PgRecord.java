@@ -1,4 +1,4 @@
-package tech.onega.jvm.jdbc.pg;
+package tech.onega.jvm.pg;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -11,15 +11,15 @@ import tech.onega.jvm.std.annotation.NotThreadSafe;
 import tech.onega.jvm.std.annotation.Nullable;
 
 @NotThreadSafe
-class JdbcRecordPostgres implements JdbcRecord {
+class PgRecord implements JdbcRecord {
 
   private final LinkedHashMap<String, Object> data;
 
-  public JdbcRecordPostgres() {
+  public PgRecord() {
     this.data = new LinkedHashMap<>();
   }
 
-  public JdbcRecordPostgres(final Map<String, Object> data) {
+  public PgRecord(final Map<String, Object> data) {
     this.data = new LinkedHashMap<>(data);
   }
 
@@ -102,7 +102,7 @@ class JdbcRecordPostgres implements JdbcRecord {
   }
 
   @Override
-  public JdbcRecordPostgres set(final String key, @Nullable final Object value) {
+  public PgRecord set(final String key, @Nullable final Object value) {
     if (value instanceof final Instant valueInstant) {
       this.data.put(key, java.sql.Timestamp.from(valueInstant));
     }
