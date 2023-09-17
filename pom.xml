@@ -26,9 +26,8 @@
   <modules>
     <module>std</module>
     <module>log-tp</module>
-    <module>jdbc</module>
-    <module>pg</module>
-    <module>pg-test</module>
+    <module>postgres-client</module>
+    <module>postgres-testcontainer</module>
   </modules>
 
   <dependencyManagement>
@@ -50,19 +49,13 @@
 
       <dependency>
         <groupId>tech.onega.jvm</groupId>
-        <artifactId>jdbc</artifactId>
+        <artifactId>postgres-client</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
 
       <dependency>
         <groupId>tech.onega.jvm</groupId>
-        <artifactId>pg</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>tech.onega.jvm</groupId>
-        <artifactId>pg-test</artifactId>
+        <artifactId>postgres-testcontainer</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <!-- tech.onega [END] -->
