@@ -58,13 +58,13 @@ public class HashTableTest {
     Check.isFalse(table.isEmpty());
     Check.equals(table.size(), 1);
     Check.isTrue(table.contains(1));
-    Check.isTrue(table.get(1).key == 1);
+    Check.isTrue(table.get(1).key() == 1);
     //add 2
     table.replace(KV.of(2, null));
     Check.isFalse(table.isEmpty());
     Check.equals(table.size(), 2);
     Check.isTrue(table.contains(2));
-    Check.isTrue(table.get(2).key == 2);
+    Check.isTrue(table.get(2).key() == 2);
     //add same - 2
     table.replace(KV.of(2, null));
     Check.isFalse(table.isEmpty());
@@ -76,7 +76,7 @@ public class HashTableTest {
     Check.isFalse(table.contains(1));
     Check.isNull(table.get(1));
     Check.isTrue(table.contains(2));
-    Check.isTrue(table.get(2).key == 2);
+    Check.isTrue(table.get(2).key() == 2);
     //clear
     table.clear();
     Check.isTrue(table.isEmpty());
@@ -96,7 +96,7 @@ public class HashTableTest {
     Check.equals(iTable.size(), size);
     int pos = 0;
     for (final var kv : iTable) {
-      Check.isTrue(kv.key == pos++);
+      Check.isTrue(kv.key() == pos++);
     }
   }
 
@@ -143,7 +143,7 @@ public class HashTableTest {
     }
     var pos = 0;
     for (final var kv : table) {
-      Check.isTrue(kv.key == pos++);
+      Check.isTrue(kv.key() == pos++);
     }
   }
 
@@ -200,7 +200,7 @@ public class HashTableTest {
     Check.equals(iTable.size(), size);
     int pos = 0;
     for (final var kv : iTable) {
-      Check.isTrue(kv.key == pos++);
+      Check.isTrue(kv.key() == pos++);
     }
     Check.equals(iTable.toArray(), table.toArray());
   }

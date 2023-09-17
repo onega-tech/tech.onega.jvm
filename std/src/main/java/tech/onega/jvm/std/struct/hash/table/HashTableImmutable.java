@@ -58,7 +58,7 @@ final public class HashTableImmutable<K, V> implements Iterable<KV<K, V>>, Seria
   }
 
   public boolean contains(final K key) {
-    return get(key) != null;
+    return this.get(key) != null;
   }
 
   @Override
@@ -67,18 +67,18 @@ final public class HashTableImmutable<K, V> implements Iterable<KV<K, V>>, Seria
   }
 
   public KV<K, V> first() {
-    return first == null ? null : first.kv;
+    return this.first == null ? null : this.first.kv;
   }
 
   public KV<K, V> get(final K key) {
-    if (size == 0 || table.length == 0) {
+    if (this.size == 0 || this.table.length == 0) {
       return null;
     }
-    final int hash = hashFunction.hash(key);
-    final int index = indexOf(hash, table.length);
-    HashTableNode<K, V> node = table[index];
+    final int hash = this.hashFunction.hash(key);
+    final int index = indexOf(hash, this.table.length);
+    HashTableNode<K, V> node = this.table[index];
     while (node != null) {
-      if (node.kv.key == key || hashFunction.equals(node.kv.key, key)) {
+      if (node.kv.key() == key || this.hashFunction.equals(node.kv.key(), key)) {
         return node == null ? null : node.kv;
       }
       node = node.next;
@@ -92,29 +92,29 @@ final public class HashTableImmutable<K, V> implements Iterable<KV<K, V>>, Seria
   }
 
   public HashFunction<K> hashFunction() {
-    return hashFunction;
+    return this.hashFunction;
   }
 
   public boolean isEmpty() {
-    return size == 0;
+    return this.size == 0;
   }
 
   @Override
   public Iterator<KV<K, V>> iterator() {
-    return new HashTableIterator<>(first, null);
+    return new HashTableIterator<>(this.first, null);
   }
 
   public int size() {
-    return size;
+    return this.size;
   }
 
   public Stream<KV<K, V>> stream() {
-    return StreamUtils.createStream(iterator());
+    return StreamUtils.createStream(this.iterator());
   }
 
   public KV<K, V>[] toArray() {
     @SuppressWarnings("unchecked")
-    final KV<K, V>[] kvs = new KV[size()];
+    final KV<K, V>[] kvs = new KV[this.size()];
     int pos = 0;
     for (final KV<K, V> kv : this) {
       kvs[pos++] = kv;

@@ -3,34 +3,33 @@ package org.slf4j;
 import java.io.Serializable;
 import java.util.Iterator;
 
-@Deprecated
 public interface Marker extends Serializable {
 
-  public final String ANY_MARKER = "*";
+  String ANY_MARKER = "*";
 
-  public final String ANY_NON_NULL_MARKER = "+";
+  String ANY_NON_NULL_MARKER = "+";
 
-  public void add(Marker reference);
+  void add(Marker reference);
 
-  public boolean contains(Marker other);
+  boolean contains(Marker other);
 
-  public boolean contains(String name);
+  boolean contains(String name);
 
   @Override
-  public boolean equals(Object o);
+  boolean equals(Object o);
 
-  public String getName();
+  String getName();
 
   @Deprecated
-  public boolean hasChildren();
+  boolean hasChildren();
 
   @Override
-  public int hashCode();
+  int hashCode();
 
-  public boolean hasReferences();
+  boolean hasReferences();
 
-  public Iterator<Marker> iterator();
+  Iterator<Marker> iterator();
 
-  public boolean remove(Marker reference);
+  boolean remove(Marker reference);
 
 }

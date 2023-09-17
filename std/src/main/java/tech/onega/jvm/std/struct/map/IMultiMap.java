@@ -107,10 +107,10 @@ final public class IMultiMap<K, V> implements IVector<KV<K, V>> {
       }
       keyIndex++;
     }
-    keyMultiValues = IList.wrap(tmpKeyMultiValues);
-    keys = IList.wrap(tmpKeys);
-    values = IList.wrap(tmpValues);
-    keyValues = IList.wrap(tmpKeyValues);
+    this.keyMultiValues = IList.wrap(tmpKeyMultiValues);
+    this.keys = IList.wrap(tmpKeys);
+    this.values = IList.wrap(tmpValues);
+    this.keyValues = IList.wrap(tmpKeyValues);
   }
 
   @Override
@@ -120,19 +120,19 @@ final public class IMultiMap<K, V> implements IVector<KV<K, V>> {
 
   @Override
   public boolean contains(final KV<K, V> kv) {
-    final KV<K, IList<V>> e = data.get(kv.key());
+    final KV<K, IList<V>> e = this.data.get(kv.key());
     if (e == null) {
       return false;
     }
-    return e.value.contains(kv.value);
+    return e.value().contains(kv.value());
   }
 
   public boolean containsKey(final K key) {
-    return data.contains(key);
+    return this.data.contains(key);
   }
 
   public boolean containsValue(final V value) {
-    return values.contains(value);
+    return this.values.contains(value);
   }
 
   @Override
@@ -142,86 +142,86 @@ final public class IMultiMap<K, V> implements IVector<KV<K, V>> {
 
   @Override
   public KV<K, V> first() {
-    if (data.isEmpty()) {
+    if (this.data.isEmpty()) {
       return null;
     }
-    final KV<K, IList<V>> kv = data.first();
-    return kv == null ? null : kv.value.isEmpty() ? null : KV.of(kv.key, kv.value.first());
+    final KV<K, IList<V>> kv = this.data.first();
+    return kv == null ? null : kv.value().isEmpty() ? null : KV.of(kv.key(), kv.value().first());
   }
 
   public V first(final K key) {
-    return first(key, null);
+    return this.first(key, null);
   }
 
   public V first(final K key, final V defaultValue) {
-    final KV<K, IList<V>> kv = data.get(key);
-    return kv == null ? defaultValue : kv.value.first();
+    final KV<K, IList<V>> kv = this.data.get(key);
+    return kv == null ? defaultValue : kv.value().first();
   }
 
   public IList<V> get(final K key) {
-    return get(key, null);
+    return this.get(key, null);
   }
 
   public IList<V> get(final K key, final IList<V> defaultValue) {
-    final KV<K, IList<V>> node = data.get(key);
-    return node == null ? defaultValue : node.value;
+    final KV<K, IList<V>> node = this.data.get(key);
+    return node == null ? defaultValue : node.value();
   }
 
   @Override
   public int hashCode() {
-    return keyValues.hashCode();
+    return this.keyValues.hashCode();
   }
 
   @Override
   public boolean isEmpty() {
-    return keyValues.isEmpty();
+    return this.keyValues.isEmpty();
   }
 
   @Override
   public Iterator<KV<K, V>> iterator() {
-    return keyValues.iterator();
+    return this.keyValues.iterator();
   }
 
   public IList<KV<K, IList<V>>> keyMultiValues() {
-    return keyMultiValues;
+    return this.keyMultiValues;
   }
 
   public IList<K> keys() {
-    return keys;
+    return this.keys;
   }
 
   public int keysSize() {
-    return keys.size();
+    return this.keys.size();
   }
 
   public IList<KV<K, V>> keyValues() {
-    return keyValues;
+    return this.keyValues;
   }
 
   @Override
   public int size() {
-    return keyValues.size();
+    return this.keyValues.size();
   }
 
   @Override
   public Spliterator<KV<K, V>> spliterator() {
-    return Spliterators.spliterator(iterator(), size(),
+    return Spliterators.spliterator(this.iterator(), this.size(),
       Spliterator.ORDERED | Spliterator.SIZED | Spliterator.IMMUTABLE);
   }
 
   @Override
   public Stream<KV<K, V>> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return StreamSupport.stream(this.spliterator(), false);
   }
 
   @Override
   public Object[] toArray() {
-    return keyValues.toArray();
+    return this.keyValues.toArray();
   }
 
   @Override
   public IList<KV<K, V>> toIList() {
-    return keyValues;
+    return this.keyValues;
   }
 
   public IMultiMap<K, V> toIMultiMap() {
@@ -230,11 +230,11 @@ final public class IMultiMap<K, V> implements IVector<KV<K, V>> {
 
   @Override
   public String toString() {
-    return keyMultiValues().toString();
+    return this.keyMultiValues().toString();
   }
 
   public IList<V> values() {
-    return values;
+    return this.values;
   }
 
 }

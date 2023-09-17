@@ -1,6 +1,5 @@
 package org.apache.commons.logging;
 
-@Deprecated
 public interface Log {
 
   void debug(Object message);

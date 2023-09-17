@@ -1,6 +1,5 @@
 package org.slf4j;
 
-@SuppressWarnings("deprecation")
 final class LoggerImpl implements org.slf4j.Logger {
 
   protected static final int STACK_DEPTH = 1;

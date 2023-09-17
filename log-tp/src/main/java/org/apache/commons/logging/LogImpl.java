@@ -1,6 +1,5 @@
 package org.apache.commons.logging;
 
-@Deprecated
 final class LogImpl implements Log {
 
   private static final int STACK_DEPTH = 1;

@@ -23,13 +23,19 @@
     <!-- onega [begin] -->
     <dependency>
       <groupId>tech.onega.jvm</groupId>
-      <artifactId>std</artifactId>
+      <artifactId>log-tp</artifactId>
     </dependency>
     <!-- onega [end] -->
 
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<groupId>org.slf4j</groupId>
+      		<artifactId>slf4j-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>

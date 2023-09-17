@@ -1,6 +1,5 @@
 package org.apache.commons.logging;
 
-@Deprecated
 final class LogFactoryImpl extends LogFactory {
 
   @Override

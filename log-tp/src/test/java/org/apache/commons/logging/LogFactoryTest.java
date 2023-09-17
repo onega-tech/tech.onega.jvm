@@ -2,7 +2,6 @@ package org.apache.commons.logging;
 
 import org.testng.annotations.Test;
 
-@SuppressWarnings("deprecation")
 public class LogFactoryTest {
 
   private final static org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory

@@ -90,94 +90,94 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
   private MMultiMap(final int initialCapacity, final int maxCapacity) {
     this.maxCapacity = maxCapacity;
     this.capacity = initialCapacity;
-    data = HashTable.lifo(initialCapacity, maxCapacity);
+    this.data = HashTable.lifo(initialCapacity, maxCapacity);
   }
 
   public MMultiMap<K, V> add(final K key, final V value) {
-    checkCanAdd(1);
-    addUnsafe(key, value);
-    hashCodeReseted = true;
+    this.checkCanAdd(1);
+    this.addUnsafe(key, value);
+    this.hashCodeReseted = true;
     return this;
   }
 
   @Override
   public MMultiMap<K, V> add(final KV<K, V> keyValue) {
-    return add(keyValue.key(), keyValue.value());
+    return this.add(keyValue.key(), keyValue.value());
   }
 
   @Override
   public MMultiMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable) {
-    return addIterator(iterable.iterator());
+    return this.addIterator(iterable.iterator());
   }
 
   @Override
   public MMultiMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable, final int limit) {
-    return addIterator(IteratorUtils.limit(iterable.iterator(), limit));
+    return this.addIterator(IteratorUtils.limit(iterable.iterator(), limit));
   }
 
   @Override
   public MMultiMap<K, V> addAll(final Iterable<? extends KV<K, V>> iterable, final int limit, final int offset) {
-    return addIterator(IteratorUtils.limitOffset(iterable.iterator(), limit, offset));
+    return this.addIterator(IteratorUtils.limitOffset(iterable.iterator(), limit, offset));
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public MMultiMap<K, V> addAll(final KV<K, V>... keyValues) {
-    return addAll(keyValues, keyValues.length, 0);
+    return this.addAll(keyValues, keyValues.length, 0);
   }
 
   @Override
   public MMultiMap<K, V> addAll(final KV<K, V>[] keyValues, final int limit) {
-    return addAll(keyValues, limit, 0);
+    return this.addAll(keyValues, limit, 0);
   }
 
   @Override
   public MMultiMap<K, V> addAll(final KV<K, V>[] keyValues, final int limit, final int offset) {
     if (keyValues != null && keyValues.length > 0) {
-      checkCanAdd(limit);
+      this.checkCanAdd(limit);
       for (int i = offset; i < limit + offset; i++) {
-        addUnsafe(keyValues[i].key(), keyValues[i].value());
+        this.addUnsafe(keyValues[i].key(), keyValues[i].value());
       }
-      hashCodeReseted = true;
+      this.hashCodeReseted = true;
     }
     return this;
   }
 
   @Override
   public MMultiMap<K, V> addAll(final Stream<? extends KV<K, V>> stream) {
-    return addIterator(stream.iterator());
+    return this.addIterator(stream.iterator());
   }
 
   public MMultiMap<K, V> addIterator(final Iterator<? extends KV<K, V>> iterator) {
     while (iterator.hasNext()) {
-      checkCanAdd(1);
+      this.checkCanAdd(1);
       final var kv = iterator.next();
-      addUnsafe(kv.key(), kv.value());
+      this.addUnsafe(kv.key(), kv.value());
     }
-    hashCodeReseted = true;
+    this.hashCodeReseted = true;
     return this;
   }
 
   public MMultiMap<K, V> addStreamEntry(final Stream<? extends Entry<K, V>> stream) {
     final Iterator<? extends Map.Entry<K, V>> iterator = stream.iterator();
     while (iterator.hasNext()) {
-      checkCanAdd(1);
+      this.checkCanAdd(1);
       final Map.Entry<K, V> kv = iterator.next();
-      addUnsafe(kv.getKey(), kv.getValue());
+      this.addUnsafe(kv.getKey(), kv.getValue());
     }
-    hashCodeReseted = true;
+    this.hashCodeReseted = true;
     return this;
   }
 
   private void addUnsafe(final K key, final V value) {
-    final var kv = data.get(key);
+    final var kv = this.data.get(key);
     if (kv == null) {
-      data.replace(KV.of(key, MList.of(value)));
+      this.data.replace(KV.of(key, MList.of(value)));
     }
     else {
-      kv.value.add(value);
+      kv.value().add(value);
     }
-    size++;
+    this.size++;
   }
 
   @Override
@@ -187,62 +187,62 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
   @Override
   public int capacity() {
-    return Math.max(capacity, data.size());
+    return Math.max(this.capacity, this.data.size());
   }
 
   @Override
   public MMultiMap<K, V> capacity(final int newCapacity) {
-    if (capacity() != newCapacity) {
-      if (newCapacity < 0 || newCapacity > maxCapacity()) {
+    if (this.capacity() != newCapacity) {
+      if (newCapacity < 0 || newCapacity > this.maxCapacity()) {
         throw new OutOfMemoryError(String.format("Can't set capacity %s. newCapacity:%s > maxCapacity:%s",
-          this.getClass(), newCapacity, maxCapacity()));
+          this.getClass(), newCapacity, this.maxCapacity()));
       }
-      if (newCapacity < data.size()) {
-        final MMultiMap<K, V> resized = stream().limit(newCapacity).collect(collector(keysSize()));
+      if (newCapacity < this.data.size()) {
+        final MMultiMap<K, V> resized = this.stream().limit(newCapacity).collect(collector(this.keysSize()));
         this.data = resized.data;
         this.size = resized.size();
         this.hashCode = resized.hashCode();
-        hashCodeReseted = false;
+        this.hashCodeReseted = false;
       }
-      capacity = newCapacity;
+      this.capacity = newCapacity;
     }
     return this;
   }
 
   private void checkCanAdd(final int count) {
-    if (size() + count > maxCapacity) {
+    if (this.size() + count > this.maxCapacity) {
       throw new IllegalStateException(
-        String.format("Can't add %s. Cause size:%s, maxCapacity:%s", count, size(), maxCapacity));
+        String.format("Can't add %s. Cause size:%s, maxCapacity:%s", count, this.size(), this.maxCapacity));
     }
   }
 
   @Override
   public MMultiMap<K, V> clear() {
-    data.clear();
-    size = 0;
-    hashCodeReseted = true;
+    this.data.clear();
+    this.size = 0;
+    this.hashCodeReseted = true;
     return this;
   }
 
   @Override
   public boolean contains(final KV<K, V> kv) {
-    final KV<K, MList<V>> e = data.get(kv.key());
+    final KV<K, MList<V>> e = this.data.get(kv.key());
     if (e == null) {
       return false;
     }
-    return e.value.contains(kv.value);
+    return e.value().contains(kv.value());
   }
 
   public boolean containsKey(final K key) {
-    return data.contains(key);
+    return this.data.contains(key);
   }
 
   public boolean containsValue(final V value) {
-    return values().contains(value);
+    return this.values().contains(value);
   }
 
   public IMultiMap<K, V> destroy() {
-    final IMultiMap<K, V> result = IMultiMap.of(size, data.toImmutable(MList::destroy));
+    final IMultiMap<K, V> result = IMultiMap.of(this.size, this.data.toImmutable(MList::destroy));
     this.data = null;
     this.size = 0;
     this.hashCodeReseted = false;
@@ -258,52 +258,52 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
   @Override
   public KV<K, V> first() {
-    if (data.isEmpty()) {
+    if (this.data.isEmpty()) {
       return null;
     }
-    final KV<K, MList<V>> kv = data.iterator().next();
-    return kv.value.isEmpty() ? null : KV.of(kv.key, kv.value.first());
+    final KV<K, MList<V>> kv = this.data.iterator().next();
+    return kv.value().isEmpty() ? null : KV.of(kv.key(), kv.value().first());
   }
 
   public V first(final K key) {
-    final KV<K, MList<V>> kv = data.get(key);
-    return kv == null ? null : kv.value.first();
+    final KV<K, MList<V>> kv = this.data.get(key);
+    return kv == null ? null : kv.value().first();
   }
 
   public MList<V> get(final K key) {
-    return get(key, null);
+    return this.get(key, null);
   }
 
   public MList<V> get(final K key, final MList<V> defaultValue) {
-    final KV<K, MList<V>> kv = data.get(key);
-    return kv == null ? defaultValue : kv.value;
+    final KV<K, MList<V>> kv = this.data.get(key);
+    return kv == null ? defaultValue : kv.value();
   }
 
   @Override
   public int hashCode() {
-    if (isEmpty()) {
+    if (this.isEmpty()) {
       return 0;
     }
-    else if (hashCodeReseted) {
-      hashCode = data.hashCode();
-      hashCodeReseted = false;
+    else if (this.hashCodeReseted) {
+      this.hashCode = this.data.hashCode();
+      this.hashCodeReseted = false;
     }
-    return hashCode;
+    return this.hashCode;
   }
 
   @Override
   public boolean isEmpty() {
-    return data.isEmpty();
+    return this.data.isEmpty();
   }
 
   @Override
   public boolean isFull() {
-    return size() == maxCapacity();
+    return this.size() == this.maxCapacity();
   }
 
   @Override
   public Iterator<KV<K, V>> iterator() {
-    final Iterator<KV<K, MList<V>>> nodeIterator = data.iterator();
+    final Iterator<KV<K, MList<V>>> nodeIterator = this.data.iterator();
     return new Iterator<>() {
 
       private Iterator<V> valueIterator = null;
@@ -312,17 +312,17 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
       @Override
       public boolean hasNext() {
-        return nodeIterator.hasNext() || (valueIterator != null && valueIterator.hasNext());
+        return nodeIterator.hasNext() || (this.valueIterator != null && this.valueIterator.hasNext());
       }
 
       @Override
       public KV<K, V> next() {
-        if (valueIterator == null || !valueIterator.hasNext()) {
+        if (this.valueIterator == null || !this.valueIterator.hasNext()) {
           final var kv = nodeIterator.next();
-          key = kv.key();
-          valueIterator = kv.value().iterator();
+          this.key = kv.key();
+          this.valueIterator = kv.value().iterator();
         }
-        return KV.of(key, valueIterator.next());
+        return KV.of(this.key, this.valueIterator.next());
       }
 
     };
@@ -330,48 +330,48 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
   @Copy
   public IList<KV<K, IList<V>>> keyMultiValues() {
-    final MList<KV<K, IList<V>>> mList = MList.create(keysSize());
-    for (final KV<K, MList<V>> kv : data) {
-      mList.add(KV.of(kv.key, kv.value.toIList()));
+    final MList<KV<K, IList<V>>> mList = MList.create(this.keysSize());
+    for (final KV<K, MList<V>> kv : this.data) {
+      mList.add(KV.of(kv.key(), kv.value().toIList()));
     }
     return mList.toIList();
   }
 
   public IList<K> keys() {
-    return data.stream().map(KV::key).collect(IList.collector(keysSize()));
+    return this.data.stream().map(KV::key).collect(IList.collector(this.keysSize()));
   }
 
   public int keysSize() {
-    return data.size();
+    return this.data.size();
   }
 
   public IList<KV<K, V>> keyValues() {
-    return stream().collect(IList.collector(size()));
+    return this.stream().collect(IList.collector(this.size()));
   }
 
   @Override
   public int maxCapacity() {
-    return maxCapacity;
+    return this.maxCapacity;
   }
 
   public MMultiMap<K, V> remove(final K key, final V value) {
-    return remove(KV.of(key, value));
+    return this.remove(KV.of(key, value));
   }
 
   @Override
   public MMultiMap<K, V> remove(final KV<K, V> keyValue) {
-    final KV<K, MList<V>> kv = data.get(keyValue.key());
+    final KV<K, MList<V>> kv = this.data.get(keyValue.key());
     if (kv != null) {
-      final MList<V> items = kv.value;
+      final MList<V> items = kv.value();
       if (items != null) {
         final int sizeBefore = items.size();
         items.remove(keyValue.value());
         if (sizeBefore > items.size()) {
-          size--;
-          hashCodeReseted = true;
+          this.size--;
+          this.hashCodeReseted = true;
         }
         if (items.isEmpty()) {
-          data.remove(keyValue.key());
+          this.data.remove(keyValue.key());
         }
       }
     }
@@ -381,19 +381,19 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
   @Override
   public MMultiMap<K, V> removeAll(final Iterable<? extends KV<K, V>> values) {
     for (final KV<K, V> value : values) {
-      remove(value);
+      this.remove(value);
     }
     return this;
   }
 
   public MMultiMap<K, V> removeKey(final K key) {
-    final KV<K, MList<V>> kv = data.get(key);
+    final KV<K, MList<V>> kv = this.data.get(key);
     if (kv != null) {
       final MList<V> items = kv.value();
       if (items != null) {
-        data.remove(key);
-        size = size - items.size();
-        hashCodeReseted = true;
+        this.data.remove(key);
+        this.size = this.size - items.size();
+        this.hashCodeReseted = true;
       }
     }
     return this;
@@ -401,55 +401,55 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
   @Override
   public int size() {
-    return size;
+    return this.size;
   }
 
   @Override
   public MMultiMap<K, V> size(final int newSize) {
-    if (newSize < data.size()) {
-      final MMultiMap<K, V> resized = stream().limit(newSize).collect(collector(keysSize()));
+    if (newSize < this.data.size()) {
+      final MMultiMap<K, V> resized = this.stream().limit(newSize).collect(collector(this.keysSize()));
       this.data = resized.data;
       this.size = resized.size();
       this.hashCode = resized.hashCode();
-      hashCodeReseted = false;
+      this.hashCodeReseted = false;
     }
     return this;
   }
 
   @Override
   public MMultiMap<K, V> sort(final Comparator<KV<K, V>> comparator) {
-    final MMultiMap<K, V> sorted = stream().sorted(comparator).collect(collector(keysSize()));
+    final MMultiMap<K, V> sorted = this.stream().sorted(comparator).collect(collector(this.keysSize()));
     this.data = sorted.data;
     this.hashCode = sorted.hashCode();
-    hashCodeReseted = false;
+    this.hashCodeReseted = false;
     return this;
   }
 
   @Override
   public Spliterator<KV<K, V>> spliterator() {
-    return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.SIZED);
+    return Spliterators.spliterator(this.iterator(), this.size(), Spliterator.ORDERED | Spliterator.SIZED);
   }
 
   public Stream<KV<K, MList<V>>> steamKeyMultiValues() {
-    return data.stream();
+    return this.data.stream();
   }
 
   @Override
   public Stream<KV<K, V>> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return StreamSupport.stream(this.spliterator(), false);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public Object[] toArray() {
-    return IterableUtils.toArray((Iterable<Object>) (Iterable<?>) this, size(), 0, Object.class);
+    return IterableUtils.toArray((Iterable<Object>) (Iterable<?>) this, this.size(), 0, Object.class);
   }
 
   @Override
-  public KV<K, V>[] toArray(Function<Integer, KV<K, V>[]> arrayFactory) {
-    var result = arrayFactory.apply(this.size());
+  public KV<K, V>[] toArray(final Function<Integer, KV<K, V>[]> arrayFactory) {
+    final var result = arrayFactory.apply(this.size());
     var i = 0;
-    for (var v : this) {
+    for (final var v : this) {
       result[i++] = v;
     }
     return result;
@@ -457,27 +457,27 @@ final public class MMultiMap<K, V> implements MVector<KV<K, V>> {
 
   @Override
   public IList<KV<K, V>> toIList() {
-    return stream().collect(IList.collector(size()));
+    return this.stream().collect(IList.collector(this.size()));
   }
 
   public IMultiMap<K, V> toIMultiMap() {
-    return IMultiMap.of(size, data.toImmutable(MList::toIList));
+    return IMultiMap.of(this.size, this.data.toImmutable(MList::toIList));
   }
 
   @Override
   public String toString() {
-    return data.toString();
+    return this.data.toString();
   }
 
   @Override
   public MMultiMap<K, V> trim() {
-    this.capacity = data.size();
-    data.trim();
+    this.capacity = this.data.size();
+    this.data.trim();
     return this;
   }
 
   public IList<V> values() {
-    return stream().map(KV::value).collect(IList.collector(size()));
+    return this.stream().map(KV::value).collect(IList.collector(this.size()));
   }
 
 }

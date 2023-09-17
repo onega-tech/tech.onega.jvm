@@ -173,105 +173,105 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
     this.size = 0;
     this.sizeMax = sizeMax;
     this.version = 0;
-    table = new HashTableNode[capacity];
+    this.table = new HashTableNode[this.capacity];
   }
 
   private KV<K, V> add(final int keyHash, final int index, final KV<K, V> kv, final HashTableNode<K, V> prev) {
     final HashTableNode<K, V> node = new HashTableNode<>(keyHash, kv);
     if (prev == null) {
-      table[index] = node;
+      this.table[index] = node;
     }
     else {
       prev.next = node;
     }
     //link
-    if (first == null) {
-      first = node;
+    if (this.first == null) {
+      this.first = node;
     }
-    if (last == null) {
-      last = node;
+    if (this.last == null) {
+      this.last = node;
     }
-    else if (last != node && node.after == null && node.before == null) {
-      last.after = node;
-      node.before = last;
-      last = node;
+    else if (this.last != node && node.after == null && node.before == null) {
+      this.last.after = node;
+      node.before = this.last;
+      this.last = node;
     }
-    size++;
-    if (size > sizeMax) { //if full
-      trimTo(sizeMax);
+    this.size++;
+    if (this.size > this.sizeMax) { //if full
+      this.trimTo(this.sizeMax);
     }
     else {
-      grow();
+      this.grow();
     }
     return null;
   }
 
   public int capacity() {
-    return capacity;
+    return this.capacity;
   }
 
   public void capacity(final int newCapacity) {
-    this.capacity = Math.min(newCapacity, capacityMax);
-    this.capacityMax = Math.max(capacity, capacityMax);
-    collisions = calcCollisions(size, capacity);
-    collisionsMax = Math.max(collisions, collisionsMax);
-    table = rebalance(table, capacity);
+    this.capacity = Math.min(newCapacity, this.capacityMax);
+    this.capacityMax = Math.max(this.capacity, this.capacityMax);
+    this.collisions = calcCollisions(this.size, this.capacity);
+    this.collisionsMax = Math.max(this.collisions, this.collisionsMax);
+    this.table = rebalance(this.table, this.capacity);
   }
 
   public int capacityMax() {
-    return capacityMax;
+    return this.capacityMax;
   }
 
   public void capacityMax(final int newCapacityMax) {
     this.capacityMax = newCapacityMax;
-    this.capacity = Math.min(this.capacity, capacityMax);
-    collisions = calcCollisions(size, capacity);
-    collisionsMax = Math.max(collisions, collisionsMax);
-    table = rebalance(table, capacity);
+    this.capacity = Math.min(this.capacity, this.capacityMax);
+    this.collisions = calcCollisions(this.size, this.capacity);
+    this.collisionsMax = Math.max(this.collisions, this.collisionsMax);
+    this.table = rebalance(this.table, this.capacity);
   }
 
   public void clear() {
-    if (size > 0) {
-      first = null;
-      last = null;
-      size = 0;
-      version++;
-      Arrays.fill(table, null);
+    if (this.size > 0) {
+      this.first = null;
+      this.last = null;
+      this.size = 0;
+      this.version++;
+      Arrays.fill(this.table, null);
     }
   }
 
   public float collisions() {
-    return collisions;
+    return this.collisions;
   }
 
   public void collisions(final float newCollisions) {
-    this.collisions = Math.min(newCollisions, collisionsMax);
-    this.collisionsMax = Math.max(collisions, collisionsMax);
-    this.capacity = collisions == 0f ? 0 : (int) Math.floor(size / collisions);
-    this.capacityMax = Math.max(capacity, capacityMax);
-    table = rebalance(table, capacity);
+    this.collisions = Math.min(newCollisions, this.collisionsMax);
+    this.collisionsMax = Math.max(this.collisions, this.collisionsMax);
+    this.capacity = this.collisions == 0f ? 0 : (int) Math.floor(this.size / this.collisions);
+    this.capacityMax = Math.max(this.capacity, this.capacityMax);
+    this.table = rebalance(this.table, this.capacity);
   }
 
   public float collisionsMax() {
-    return collisionsMax;
+    return this.collisionsMax;
   }
 
   public void collisionsMax(final float newCollisionsMax) {
     this.collisionsMax = newCollisionsMax;
-    this.collisions = Math.min(collisions, collisionsMax);
-    this.capacity = collisions == 0f ? 0 : (int) Math.floor(size / collisions);
-    this.capacityMax = Math.max(capacity, capacityMax);
-    table = rebalance(table, capacity);
+    this.collisions = Math.min(this.collisions, this.collisionsMax);
+    this.capacity = this.collisions == 0f ? 0 : (int) Math.floor(this.size / this.collisions);
+    this.capacityMax = Math.max(this.capacity, this.capacityMax);
+    this.table = rebalance(this.table, this.capacity);
   }
 
   public boolean contains(final K key) {
-    return get(key) != null;
+    return this.get(key) != null;
   }
 
   @Self
   public HashTableImmutable<K, V> destroy() {
-    trim();
-    final HashTableImmutable<K, V> result = HashTableImmutable.of(size, table, first, hashFunction);
+    this.trim();
+    final HashTableImmutable<K, V> result = HashTableImmutable.of(this.size, this.table, this.first, this.hashFunction);
     this.size = 0;
     this.table = null;
     this.capacity = 0;
@@ -287,18 +287,18 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public KV<K, V> first() {
-    return first == null ? null : first.kv;
+    return this.first == null ? null : this.first.kv;
   }
 
   public KV<K, V> get(final K key) {
-    if (size == 0 || table.length == 0) {
+    if (this.size == 0 || this.table.length == 0) {
       return null;
     }
-    final int hash = hashFunction.hash(key);
-    final int index = indexOf(hash, table.length);
-    HashTableNode<K, V> node = table[index];
+    final int hash = this.hashFunction.hash(key);
+    final int index = indexOf(hash, this.table.length);
+    HashTableNode<K, V> node = this.table[index];
     while (node != null) {
-      if (node.kv.key == key || hashFunction.equals(node.kv.key, key)) {
+      if (node.kv.key() == key || this.hashFunction.equals(node.kv.key(), key)) {
         return node == null ? null : node.kv;
       }
       node = node.next;
@@ -307,14 +307,14 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   private void grow() {
-    version++;
-    collisions = calcCollisions(size, capacity);
-    while (capacity == 0 || collisions > collisionsMax) {
-      capacity = capacityGrow(capacity, capacityMax);
-      collisions = calcCollisions(size, capacity);
+    this.version++;
+    this.collisions = calcCollisions(this.size, this.capacity);
+    while (this.capacity == 0 || this.collisions > this.collisionsMax) {
+      this.capacity = capacityGrow(this.capacity, this.capacityMax);
+      this.collisions = calcCollisions(this.size, this.capacity);
     }
-    if (capacity >= table.length) {
-      table = rebalance(table, capacity);
+    if (this.capacity >= this.table.length) {
+      this.table = rebalance(this.table, this.capacity);
     }
   }
 
@@ -324,33 +324,33 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public HashFunction<K> hashFunction() {
-    return hashFunction;
+    return this.hashFunction;
   }
 
   public boolean isEmpty() {
-    return size == 0;
+    return this.size == 0;
   }
 
   public boolean isFull() {
-    return size >= sizeMax;
+    return this.size >= this.sizeMax;
   }
 
   @Override
   public Iterator<KV<K, V>> iterator() {
-    final int expectedVersion = version;
-    return new HashTableIterator<>(first, () -> {
-      if (expectedVersion != version) {
+    final int expectedVersion = this.version;
+    return new HashTableIterator<>(this.first, () -> {
+      if (expectedVersion != this.version) {
         throw new ConcurrentModificationException();
       }
     });
   }
 
   public KV<K, V> last() {
-    return last == null ? null : last.kv;
+    return this.last == null ? null : this.last.kv;
   }
 
   public boolean lru() {
-    return lru;
+    return this.lru;
   }
 
   public void lru(final boolean lru) {
@@ -358,17 +358,17 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public KV<K, V> remove(final K key) {
-    if (table.length == 0 || size == 0) {
+    if (this.table.length == 0 || this.size == 0) {
       return null;
     }
-    final int hash = hashFunction.hash(key);
-    final int index = indexOf(hash, table.length);
+    final int hash = this.hashFunction.hash(key);
+    final int index = indexOf(hash, this.table.length);
     HashTableNode<K, V> prev = null;
-    HashTableNode<K, V> node = table[index];
+    HashTableNode<K, V> node = this.table[index];
     while (node != null) {
-      if (hashFunction.equals(node.kv.key, key)) {
+      if (this.hashFunction.equals(node.kv.key(), key)) {
         if (prev == null) {
-          table[index] = node.next;
+          this.table[index] = node.next;
         }
         else {
           prev.next = node.next;
@@ -385,19 +385,19 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
             node.before.after = node.after;
             node.after.before = node.before;
           }
-          if (first == node) {
-            first = node.after;
+          if (this.first == node) {
+            this.first = node.after;
           }
-          if (last == node) {
-            last = node.before;
+          if (this.last == node) {
+            this.last = node.before;
           }
           node.before = null;
           node.after = null;
         }
         //done
-        size--;
-        version++;
-        collisions = calcCollisions(size, capacity);
+        this.size--;
+        this.version++;
+        this.collisions = calcCollisions(this.size, this.capacity);
         return node.kv;
       }
       prev = node;
@@ -407,45 +407,45 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public KV<K, V> replace(final KV<K, V> kv) {
-    grow();
-    final int keyHash = hashFunction.hash(kv.key);
-    final int index = indexOf(keyHash, table.length);
+    this.grow();
+    final int keyHash = this.hashFunction.hash(kv.key());
+    final int index = indexOf(keyHash, this.table.length);
     HashTableNode<K, V> prev = null;
-    HashTableNode<K, V> node = table[index];
+    HashTableNode<K, V> node = this.table[index];
     while (node != null) {
-      if (hashFunction.equals(node.kv.key, kv.key)) {
-        return update(node, kv);
+      if (this.hashFunction.equals(node.kv.key(), kv.key())) {
+        return this.update(node, kv);
       }
       prev = node;
       node = node.next;
     }
-    return add(keyHash, index, kv, prev);
+    return this.add(keyHash, index, kv, prev);
   }
 
   public int size() {
-    return size;
+    return this.size;
   }
 
   public void size(final int newSize) {
-    trimTo(newSize);
+    this.trimTo(newSize);
   }
 
   public int sizeMax() {
-    return sizeMax;
+    return this.sizeMax;
   }
 
   public void sizeMax(final int newSizeMax) {
-    trimTo(newSizeMax);
+    this.trimTo(newSizeMax);
     this.sizeMax = newSizeMax;
   }
 
   public Stream<KV<K, V>> stream() {
-    return StreamUtils.createStream(iterator());
+    return StreamUtils.createStream(this.iterator());
   }
 
   public KV<K, V>[] toArray() {
     @SuppressWarnings("unchecked")
-    final KV<K, V>[] kvs = new KV[size()];
+    final KV<K, V>[] kvs = new KV[this.size()];
     int pos = 0;
     for (final KV<K, V> kv : this) {
       kvs[pos++] = kv;
@@ -455,7 +455,7 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
 
   @Copy
   public HashTableImmutable<K, V> toImmutable() {
-    final HashTable<K, V> result = new HashTable<>(size, size, collisionsMax, hashFunction, size, lru);
+    final HashTable<K, V> result = new HashTable<>(this.size, this.size, this.collisionsMax, this.hashFunction, this.size, this.lru);
     for (final KV<K, V> kv : this) {
       result.replace(kv);
     }
@@ -463,9 +463,9 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public <R> HashTableImmutable<K, R> toImmutable(final Function<V, R> mapper) {
-    final HashTable<K, R> table = new HashTable<>(size, size, collisionsMax, hashFunction, size, lru);
+    final HashTable<K, R> table = new HashTable<>(this.size, this.size, this.collisionsMax, this.hashFunction, this.size, this.lru);
     for (final KV<K, V> kv : this) {
-      table.replace(KV.of(kv.key, mapper.apply(kv.value)));
+      table.replace(KV.of(kv.key(), mapper.apply(kv.value())));
     }
     return table.destroy();
   }
@@ -476,12 +476,12 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public void trim() {
-    capacity(size());
+    this.capacity(this.size());
   }
 
   private void trimTo(final int newSize) {
-    while (size > newSize) {
-      remove(lru ? first.kv.key : last.kv.key);
+    while (this.size > newSize) {
+      this.remove(this.lru ? this.first.kv.key() : this.last.kv.key());
     }
   }
 
@@ -492,24 +492,24 @@ final public class HashTable<K, V> implements Iterable<KV<K, V>>, Serializable {
   }
 
   public int version() {
-    return version;
+    return this.version;
   }
 
   public <E extends Throwable> void walk(final Lambda.Consumer<HashTableCursor<K, V>, E> context) throws E {
-    walk(context, size, 0);
+    this.walk(context, this.size, 0);
   }
 
   public <E extends Throwable> void walk(final Lambda.Consumer<HashTableCursor<K, V>, E> context, final int limit,
     final int offset) throws E {
-    final Ref<Integer> expectedVersionRef = Ref.of(version);
-    final HashTableIterator<K, V> iterator = new HashTableIterator<>(first, () -> {
-      if (expectedVersionRef.get() != version) {
+    final Ref<Integer> expectedVersionRef = Ref.of(this.version);
+    final HashTableIterator<K, V> iterator = new HashTableIterator<>(this.first, () -> {
+      if (expectedVersionRef.get() != this.version) {
         throw new ConcurrentModificationException();
       }
     });
     final HashTableCursor<K, V> cursor = new HashTableCursor<>(iterator, limit, offset, kv -> {
-      remove(kv.key);
-      expectedVersionRef.set(version);
+      this.remove(kv.key());
+      expectedVersionRef.set(this.version);
     });
     while (cursor.next()) {
       context.invoke(cursor);

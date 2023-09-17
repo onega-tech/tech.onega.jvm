@@ -89,13 +89,13 @@ final public class XmlEncoder {
     else if (value instanceof IMap) {
       final var map = (IMap<Object, Object>) value;
       for (final var entry : map) {
-        makeValue(document, element, entry.key, entry.value, level++, maxLevel);
+        makeValue(document, element, entry.key(), entry.value(), level++, maxLevel);
       }
     }
     else if (value instanceof MMap) {
       final var map = (MMap<Object, Object>) value;
       for (final var entry : map) {
-        makeValue(document, element, entry.key, entry.value, level++, maxLevel);
+        makeValue(document, element, entry.key(), entry.value(), level++, maxLevel);
       }
     }
     else if (value instanceof Iterable) {

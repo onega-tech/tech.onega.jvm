@@ -20,11 +20,11 @@ final public class KV<K, V> implements Serializable {
     return new KV<>(k, v);
   }
 
-  public final K key;
+  private final K key;
 
-  public final V value;
+  private final V value;
 
-  public final int hashCode;
+  private final int hashCode;
 
   private KV(final K key, final V value) {
     this.key = key;
@@ -43,20 +43,20 @@ final public class KV<K, V> implements Serializable {
 
   @Override
   public int hashCode() {
-    return hashCode;
+    return this.hashCode;
   }
 
   public K key() {
-    return key;
+    return this.key;
   }
 
   @Override
   public String toString() {
-    return String.format("%s:%s", key(), value());
+    return String.format("%s:%s", this.key(), this.value());
   }
 
   public V value() {
-    return value;
+    return this.value;
   }
 
 }

@@ -1,0 +1,5 @@
+parallel: none
+tests:
+ - name: tech.onega.jvm.arangodb.client
+   preserveOrder: true
+   packages: ["tech.onega.jvm.arangodb.client.*"]

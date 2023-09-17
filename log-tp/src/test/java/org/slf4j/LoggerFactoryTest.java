@@ -2,7 +2,6 @@ package org.slf4j;
 
 import org.testng.annotations.Test;
 
-@SuppressWarnings("deprecation")
 public class LoggerFactoryTest {
 
   private final static org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(LoggerFactoryTest.class);

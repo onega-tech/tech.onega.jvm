@@ -1,6 +1,8 @@
 package tech.onega.jvm.postgres.testcontainer;
 
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Exec;
 
@@ -19,6 +21,7 @@ final public class PostgresTestContainer implements AutoCloseable {
     final var container = new GenericContainer<>(dockerImage);
     container.withEnv("MALLOC_ARENA_MAX", "1");
     container.withEnv("POSTGRES_PASSWORD", password);
+    container.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(PostgresTestContainer.class)));
     container.withExposedPorts(containerPort);
     container.start();
     return container;

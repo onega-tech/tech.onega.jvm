@@ -1,6 +1,5 @@
 package org.slf4j;
 
-@Deprecated
 final public class LoggerFactory {
 
   public static ILoggerFactory getILoggerFactory() {

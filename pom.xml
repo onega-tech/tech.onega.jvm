@@ -28,6 +28,8 @@
     <module>log-tp</module>
     <module>postgres-client</module>
     <module>postgres-testcontainer</module>
+    <module>arangodb-client</module>
+    <module>arangodb-testcontainer</module>
   </modules>
 
   <dependencyManagement>
@@ -56,6 +58,18 @@
       <dependency>
         <groupId>tech.onega.jvm</groupId>
         <artifactId>postgres-testcontainer</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>arangodb-client</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>tech.onega.jvm</groupId>
+        <artifactId>arangodb-testcontainer</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <!-- tech.onega [END] -->

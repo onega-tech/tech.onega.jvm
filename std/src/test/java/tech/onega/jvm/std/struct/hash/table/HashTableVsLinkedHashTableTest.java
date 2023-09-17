@@ -74,7 +74,7 @@ public class HashTableVsLinkedHashTableTest {
       while (iSet.hasNext()) {
         sa[i] = iSet.next();
         final KV<Integer, Object> tk = iTable.next();
-        ta[i] = tk.key;
+        ta[i] = tk.key();
         i++;
       }
       Arrays.sort(sa);

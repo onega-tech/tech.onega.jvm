@@ -1,130 +1,129 @@
 package org.slf4j;
 
-@Deprecated
 public interface Logger {
 
-  final public String ROOT_LOGGER_NAME = "ROOT";
+  String ROOT_LOGGER_NAME = "ROOT";
 
-  public void debug(Marker marker, String msg);
+  void debug(Marker marker, String msg);
 
-  public void debug(Marker marker, String format, Object arg);
+  void debug(Marker marker, String format, Object arg);
 
-  public void debug(Marker marker, String format, Object... arguments);
+  void debug(Marker marker, String format, Object... arguments);
 
-  public void debug(Marker marker, String format, Object arg1, Object arg2);
+  void debug(Marker marker, String format, Object arg1, Object arg2);
 
-  public void debug(Marker marker, String msg, Throwable t);
+  void debug(Marker marker, String msg, Throwable t);
 
-  public void debug(String msg);
+  void debug(String msg);
 
-  public void debug(String format, Object arg);
+  void debug(String format, Object arg);
 
-  public void debug(String format, Object... arguments);
+  void debug(String format, Object... arguments);
 
-  public void debug(String format, Object arg1, Object arg2);
+  void debug(String format, Object arg1, Object arg2);
 
-  public void debug(String msg, Throwable t);
+  void debug(String msg, Throwable t);
 
-  public void error(Marker marker, String msg);
+  void error(Marker marker, String msg);
 
-  public void error(Marker marker, String format, Object arg);
+  void error(Marker marker, String format, Object arg);
 
-  public void error(Marker marker, String format, Object... arguments);
+  void error(Marker marker, String format, Object... arguments);
 
-  public void error(Marker marker, String format, Object arg1, Object arg2);
+  void error(Marker marker, String format, Object arg1, Object arg2);
 
-  public void error(Marker marker, String msg, Throwable t);
+  void error(Marker marker, String msg, Throwable t);
 
-  public void error(String msg);
+  void error(String msg);
 
-  public void error(String format, Object arg);
+  void error(String format, Object arg);
 
-  public void error(String format, Object... arguments);
+  void error(String format, Object... arguments);
 
-  public void error(String format, Object arg1, Object arg2);
+  void error(String format, Object arg1, Object arg2);
 
-  public void error(String msg, Throwable t);
+  void error(String msg, Throwable t);
 
-  public String getName();
+  String getName();
 
-  public void info(Marker marker, String msg);
+  void info(Marker marker, String msg);
 
-  public void info(Marker marker, String format, Object arg);
+  void info(Marker marker, String format, Object arg);
 
-  public void info(Marker marker, String format, Object... arguments);
+  void info(Marker marker, String format, Object... arguments);
 
-  public void info(Marker marker, String format, Object arg1, Object arg2);
+  void info(Marker marker, String format, Object arg1, Object arg2);
 
-  public void info(Marker marker, String msg, Throwable t);
+  void info(Marker marker, String msg, Throwable t);
 
-  public void info(String msg);
+  void info(String msg);
 
-  public void info(String format, Object arg);
+  void info(String format, Object arg);
 
-  public void info(String format, Object... arguments);
+  void info(String format, Object... arguments);
 
-  public void info(String format, Object arg1, Object arg2);
+  void info(String format, Object arg1, Object arg2);
 
-  public void info(String msg, Throwable t);
+  void info(String msg, Throwable t);
 
-  public boolean isDebugEnabled();
+  boolean isDebugEnabled();
 
-  public boolean isDebugEnabled(Marker marker);
+  boolean isDebugEnabled(Marker marker);
 
-  public boolean isErrorEnabled();
+  boolean isErrorEnabled();
 
-  public boolean isErrorEnabled(Marker marker);
+  boolean isErrorEnabled(Marker marker);
 
-  public boolean isInfoEnabled();
+  boolean isInfoEnabled();
 
-  public boolean isInfoEnabled(Marker marker);
+  boolean isInfoEnabled(Marker marker);
 
-  public boolean isTraceEnabled();
+  boolean isTraceEnabled();
 
-  public boolean isTraceEnabled(Marker marker);
+  boolean isTraceEnabled(Marker marker);
 
-  public boolean isWarnEnabled();
+  boolean isWarnEnabled();
 
-  public boolean isWarnEnabled(Marker marker);
+  boolean isWarnEnabled(Marker marker);
 
-  public void trace(Marker marker, String msg);
+  void trace(Marker marker, String msg);
 
-  public void trace(Marker marker, String format, Object arg);
+  void trace(Marker marker, String format, Object arg);
 
-  public void trace(Marker marker, String format, Object... argArray);
+  void trace(Marker marker, String format, Object... argArray);
 
-  public void trace(Marker marker, String format, Object arg1, Object arg2);
+  void trace(Marker marker, String format, Object arg1, Object arg2);
 
-  public void trace(Marker marker, String msg, Throwable t);
+  void trace(Marker marker, String msg, Throwable t);
 
-  public void trace(String msg);
+  void trace(String msg);
 
-  public void trace(String format, Object arg);
+  void trace(String format, Object arg);
 
-  public void trace(String format, Object... arguments);
+  void trace(String format, Object... arguments);
 
-  public void trace(String format, Object arg1, Object arg2);
+  void trace(String format, Object arg1, Object arg2);
 
-  public void trace(String msg, Throwable t);
+  void trace(String msg, Throwable t);
 
-  public void warn(Marker marker, String msg);
+  void warn(Marker marker, String msg);
 
-  public void warn(Marker marker, String format, Object arg);
+  void warn(Marker marker, String format, Object arg);
 
-  public void warn(Marker marker, String format, Object... arguments);
+  void warn(Marker marker, String format, Object... arguments);
 
-  public void warn(Marker marker, String format, Object arg1, Object arg2);
+  void warn(Marker marker, String format, Object arg1, Object arg2);
 
-  public void warn(Marker marker, String msg, Throwable t);
+  void warn(Marker marker, String msg, Throwable t);
 
-  public void warn(String msg);
+  void warn(String msg);
 
-  public void warn(String format, Object arg);
+  void warn(String format, Object arg);
 
-  public void warn(String format, Object... arguments);
+  void warn(String format, Object... arguments);
 
-  public void warn(String format, Object arg1, Object arg2);
+  void warn(String format, Object arg1, Object arg2);
 
-  public void warn(String msg, Throwable t);
+  void warn(String msg, Throwable t);
 
 }

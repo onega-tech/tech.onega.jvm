@@ -1,6 +1,5 @@
 package org.slf4j;
 
-@Deprecated
 final public class MarkerFactory {
 
   public static Marker getDetachedMarker(final String name) {

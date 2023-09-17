@@ -85,9 +85,9 @@ final public class IMap<K, V> implements IVector<KV<K, V>> {
   private IMap(final HashTableImmutable<K, V> data) {
     final int size = data.size();
     this.data = data;
-    keys = data.stream().map(KV::key).collect(IList.collector(size));
-    values = data.stream().map(KV::value).collect(IList.collector(size));
-    keyValues = data.stream().collect(IList.collector(size));
+    this.keys = data.stream().map(KV::key).collect(IList.collector(size));
+    this.values = data.stream().map(KV::value).collect(IList.collector(size));
+    this.keyValues = data.stream().collect(IList.collector(size));
   }
 
   @Override
@@ -97,16 +97,16 @@ final public class IMap<K, V> implements IVector<KV<K, V>> {
 
   @Override
   public boolean contains(final KV<K, V> kv) {
-    final KV<K, V> e = data.get(kv.key);
-    return e == null ? false : Equals.yes(e.value, kv.value);
+    final KV<K, V> e = this.data.get(kv.key());
+    return e == null ? false : Equals.yes(e.value(), kv.value());
   }
 
   public boolean containsKey(final K key) {
-    return data.contains(key);
+    return this.data.contains(key);
   }
 
   public boolean containsValue(final V value) {
-    return values.contains(value);
+    return this.values.contains(value);
   }
 
   @Override
@@ -116,82 +116,82 @@ final public class IMap<K, V> implements IVector<KV<K, V>> {
 
   @Override
   public KV<K, V> first() {
-    return keyValues.first();
+    return this.keyValues.first();
   }
 
   public V get(final K key) {
-    return get(key, null);
+    return this.get(key, null);
   }
 
   public V get(final K key, final V defaultValue) {
-    final KV<K, V> kv = data.get(key);
-    return kv == null ? defaultValue : kv.value;
+    final KV<K, V> kv = this.data.get(key);
+    return kv == null ? defaultValue : kv.value();
   }
 
   @Override
   public int hashCode() {
-    return keyValues.hashCode();
+    return this.keyValues.hashCode();
   }
 
   @Override
   public boolean isEmpty() {
-    return data.isEmpty();
+    return this.data.isEmpty();
   }
 
   @Override
   public Iterator<KV<K, V>> iterator() {
-    return keyValues.iterator();
+    return this.keyValues.iterator();
   }
 
   public IList<K> keys() {
-    return keys;
+    return this.keys;
   }
 
   public IList<KV<K, V>> keyValues() {
-    return keyValues;
+    return this.keyValues;
   }
 
   @Override
   public int size() {
-    return data.size();
+    return this.data.size();
   }
 
   @Override
   public Spliterator<KV<K, V>> spliterator() {
-    return Spliterators.spliterator(iterator(), size(),
+    return Spliterators.spliterator(this.iterator(), this.size(),
       Spliterator.ORDERED | Spliterator.SIZED | Spliterator.IMMUTABLE);
   }
 
   @Override
   public Stream<KV<K, V>> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return StreamSupport.stream(this.spliterator(), false);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public Object[] toArray() {
-    return IterableUtils.toArray((Iterable<Object>) (Iterable<?>) this, size(), 0, Object.class);
+    return IterableUtils.toArray((Iterable<Object>) (Iterable<?>) this, this.size(), 0, Object.class);
   }
 
   @Override
   public IList<KV<K, V>> toIList() {
-    return keyValues;
+    return this.keyValues;
   }
 
   public Map<K, V> toMap() {
-    return data.stream()
+    return this.data.stream()
       .collect(StreamUtils.selfCollector(
-        () -> new LinkedHashMap<>(size()),
+        () -> new LinkedHashMap<>(this.size()),
         (a, v) -> a.put(v.key(), v.value())));
   }
 
   @Override
   public String toString() {
-    return keyValues.toString();
+    return this.keyValues.toString();
   }
 
   public IList<V> values() {
-    return values;
+    return this.values;
   }
 
 }

@@ -1,6 +1,5 @@
 package org.slf4j;
 
-@Deprecated
 public interface IMarkerFactory {
 
   boolean detachMarker(String name);

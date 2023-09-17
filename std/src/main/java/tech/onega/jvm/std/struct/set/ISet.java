@@ -110,7 +110,7 @@ final public class ISet<V> implements IVector<V> {
 
   @Override
   public boolean contains(final V value) {
-    return data.contains(value);
+    return this.data.contains(value);
   }
 
   @Override
@@ -120,23 +120,23 @@ final public class ISet<V> implements IVector<V> {
 
   @Override
   public V first() {
-    final KV<V, Object> first = data.first();
-    return first == null ? null : first.key;
+    final KV<V, Object> first = this.data.first();
+    return first == null ? null : first.key();
   }
 
   @Override
   public int hashCode() {
-    return hashCode;
+    return this.hashCode;
   }
 
   @Override
   public boolean isEmpty() {
-    return data.isEmpty();
+    return this.data.isEmpty();
   }
 
   @Override
   public Iterator<V> iterator() {
-    return new IteratorMap<>(data.iterator(), KV::key);
+    return new IteratorMap<>(this.data.iterator(), KV::key);
   }
 
   @Copy
@@ -148,40 +148,40 @@ final public class ISet<V> implements IVector<V> {
 
   @Override
   public int size() {
-    return data.size();
+    return this.data.size();
   }
 
   @Copy
   public ISet<V> sort(final Comparator<V> comparator) {
-    return stream()
+    return this.stream()
       .sorted(comparator)
-      .collect(collector(size()));
+      .collect(collector(this.size()));
   }
 
   @Override
   public Spliterator<V> spliterator() {
-    return Spliterators.spliterator(iterator(), size(),
+    return Spliterators.spliterator(this.iterator(), this.size(),
       Spliterator.ORDERED | Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE);
   }
 
   @Override
   public Stream<V> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return StreamSupport.stream(this.spliterator(), false);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public Object[] toArray() {
-    return IterableUtils.toArray((Iterable<Object>) this, data.size(), 0, Object.class);
+    return IterableUtils.toArray((Iterable<Object>) this, this.data.size(), 0, Object.class);
   }
 
   @Override
   public IList<V> toIList() {
-    return stream().collect(IList.collector(size()));
+    return this.stream().collect(IList.collector(this.size()));
   }
 
   public List<V> toList() {
-    return stream().collect(Collectors.toList());
+    return this.stream().collect(Collectors.toList());
   }
 
   public MSet<V> toMSet() {

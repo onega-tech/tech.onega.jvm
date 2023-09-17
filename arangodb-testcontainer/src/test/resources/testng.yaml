@@ -1,0 +1,5 @@
+parallel: none
+tests:
+ - name: tech.onega.jvm.arangodb.testcontainer
+   preserveOrder: true
+   packages: ["tech.onega.jvm.arangodb.testcontainer.*"]

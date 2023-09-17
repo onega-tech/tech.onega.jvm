@@ -1,6 +1,5 @@
 package org.apache.commons.logging;
 
-@Deprecated
 public abstract class LogFactory {
 
   public static final String DIAGNOSTICS_DEST_PROPERTY = "org.apache.commons.logging.diagnostics.dest";
