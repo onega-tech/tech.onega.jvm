@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import tech.onega.jvm.std.io.FileUtils;
 import tech.onega.jvm.std.io.writer.IOWriterBytes;
@@ -46,15 +47,16 @@ final public class JacksonMapper {
     mapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, false);
     mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
     mapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
-    mapper.setSerializationInclusion(Include.NON_EMPTY);
-    mapper.setDefaultPropertyInclusion(Include.NON_EMPTY);
+    mapper.setSerializationInclusion(Include.ALWAYS);
+    mapper.setDefaultPropertyInclusion(Include.ALWAYS);
     mapper.registerModule(new JavaTimeModule());
+    mapper.registerModule(new Jdk8Module());
     mapper.registerModule(new OnegaStdJacksonModule());
     mapper.setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
       .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
       .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
       .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-      .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+      .withCreatorVisibility(JsonAutoDetect.Visibility.ANY));
     mapper.setDefaultPrettyPrinter(prettyPrinter);
     return mapper;
   }
@@ -97,7 +99,7 @@ final public class JacksonMapper {
   }
 
   public ObjectMapper createObjectMapper() {
-    return mapper.copy();
+    return this.mapper.copy();
   }
 
   public ObjectMapper getMapper() {

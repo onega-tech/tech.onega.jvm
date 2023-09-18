@@ -14,13 +14,16 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import tech.onega.jvm.arangodb.client.domain.ArangoDbClient;
 import tech.onega.jvm.arangodb.client.domain.ArangoDbHttpTransport;
+import tech.onega.jvm.arangodb.client.domain.ArangoDbResponse;
 import tech.onega.jvm.std.annotation.Nullable;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.codec.base.Base64Codec;
 import tech.onega.jvm.std.codec.json.jackson.OnegaStdJacksonModule;
+import tech.onega.jvm.std.io.Console;
 import tech.onega.jvm.std.lang.Exec;
 import tech.onega.jvm.std.struct.hash.KV;
 import tech.onega.jvm.std.struct.map.IMultiMap;
@@ -67,15 +70,16 @@ public class ArangoDbClientImpl implements ArangoDbClient {
     objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, false);
     objectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
-    objectMapper.setSerializationInclusion(Include.NON_EMPTY);
-    objectMapper.setDefaultPropertyInclusion(Include.NON_EMPTY);
+    objectMapper.setSerializationInclusion(Include.ALWAYS);
+    objectMapper.setDefaultPropertyInclusion(Include.ALWAYS);
     objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.registerModule(new Jdk8Module());
     objectMapper.registerModule(new OnegaStdJacksonModule());
     objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
       .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
       .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
       .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-      .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+      .withCreatorVisibility(JsonAutoDetect.Visibility.ANY));
     objectMapper.setDefaultPrettyPrinter(new DefaultPrettyPrinter()
       .withArrayIndenter(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE));
     return objectMapper;
@@ -130,9 +134,29 @@ public class ArangoDbClientImpl implements ArangoDbClient {
   }
 
   @Override
-  public CompletableFuture<ArangoDbHttpTransport.Response> listAllDatabasesAsync() {
-    final var request = this.createHttpTransportRequest("GET", "/_api/database", null);
-    return this.httpTransport.execute(request);
+  public CompletableFuture<ArangoDbResponse> listAllDatabasesAsync() {
+    final var httpTransportRequest = this.createHttpTransportRequest("GET", "/_api/database", null);
+    return this.httpTransport
+      .execute(httpTransportRequest)
+      .thenApply(httpTransportResponse -> this.parseHttpTransportResponse(ArangoDbResponse.class, httpTransportResponse));
+  }
+
+  private <R> R parseHttpTransportResponse(final Class<R> responseType, final ArangoDbHttpTransport.Response httpTransportResponse) {
+    try {
+      Console.log(new String(httpTransportResponse.body()));
+      final var arangoDbResponse = this.objectMapper.readValue(httpTransportResponse.body(), ArangoDbResponse.class);
+      //.   Console.errJson(arangoDbResponse);
+      //TODO analyze status
+      //TODO map to response type //{"error":false,"code":200,"result":["_system"]}
+      //{"error":true,"errorNum":11,"errorMessage":"not authorized to execute this request","code":401}
+      //TODO map to result
+      //TODO create error
+      //TODO подумать на типом вовзрата generic, а не record
+      return (R) arangoDbResponse;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 
 }

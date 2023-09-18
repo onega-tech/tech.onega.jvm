@@ -20,9 +20,7 @@ public class ArangoDbClientImplTest {
     try (var client = ArangoDbClientImpl.createDefaultClient(config)) {
       for (var i = 0; i < 10; i++) {
         final var response = client.listAllDatabasesAsync().get();
-        Console.err(response.statusCode());
-        Console.err(response.headers());
-        Console.err(response.body() == null ? null : new String(response.body()));
+        Console.errJson(response);
       }
     }
   }

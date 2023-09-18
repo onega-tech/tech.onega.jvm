@@ -9,6 +9,6 @@ public interface ArangoDbClient extends AutoCloseable {
   @Override
   void close();
 
-  CompletableFuture<ArangoDbHttpTransport.Response> listAllDatabasesAsync();
+  CompletableFuture<ArangoDbResponse> listAllDatabasesAsync();
 
 }
