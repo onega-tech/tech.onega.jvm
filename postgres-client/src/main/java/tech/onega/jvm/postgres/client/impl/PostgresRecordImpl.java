@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.impl;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import tech.onega.jvm.postgres.client.domain.PostgresRecord;
 import tech.onega.jvm.std.annotation.NotThreadSafe;
 import tech.onega.jvm.std.annotation.Nullable;
 

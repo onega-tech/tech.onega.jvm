@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.domain;
 
 import java.time.Instant;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.validation.constraints.NotNull;
+import tech.onega.jvm.postgres.client.domain.PostgresArray;
+import tech.onega.jvm.postgres.client.domain.PostgresConnection;
+import tech.onega.jvm.postgres.client.domain.PostgresModelMapper;
+import tech.onega.jvm.postgres.client.domain.PostgresObject;
+import tech.onega.jvm.postgres.client.domain.PostgresRecord;
+import tech.onega.jvm.postgres.client.domain.PostgresResultMapper;
 import tech.onega.jvm.std.annotation.NotThreadSafe;
 import tech.onega.jvm.std.annotation.Nullable;
 import tech.onega.jvm.std.log.Logger;

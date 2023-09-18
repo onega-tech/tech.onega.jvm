@@ -1,4 +1,4 @@
-package tech.onega.jvm.arangodb.client;
+package tech.onega.jvm.arangodb.client.domain;
 
 import java.time.Duration;
 import javax.validation.constraints.Min;
@@ -10,7 +10,6 @@ public record ArangoDbClientConfig(
   @Min(1) int port,
   @NotBlank String user,
   @NotBlank String password,
-  @NotNull Duration connectionTimeout, // = Duration.ofSeconds(60);
-  @NotNull Duration requestTimeout // = Duration.ofSeconds(60);
-) {
+  @NotNull Duration connectionTimeout,
+  @NotNull Duration requestTimeout) {
 }

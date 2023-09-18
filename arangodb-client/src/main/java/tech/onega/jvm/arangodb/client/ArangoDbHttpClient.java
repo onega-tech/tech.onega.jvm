@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import tech.onega.jvm.arangodb.client.domain.ArangoDbClientConfig;
 import tech.onega.jvm.std.annotation.Nullable;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Exec;

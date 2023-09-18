@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.domain;
 
 import tech.onega.jvm.std.annotation.Immutable;
 import tech.onega.jvm.std.annotation.ThreadSafe;

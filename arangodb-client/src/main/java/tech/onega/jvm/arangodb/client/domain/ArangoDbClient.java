@@ -1,4 +1,4 @@
-package tech.onega.jvm.arangodb.client;
+package tech.onega.jvm.arangodb.client.domain;
 
 import tech.onega.jvm.std.annotation.ThreadSafe;
 

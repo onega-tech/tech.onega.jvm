@@ -1,5 +1,7 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.impl;
 
+import tech.onega.jvm.postgres.client.domain.PostgresConnection;
+import tech.onega.jvm.postgres.client.domain.PostgresMigration;
 import tech.onega.jvm.std.annotation.NotThreadSafe;
 
 @NotThreadSafe

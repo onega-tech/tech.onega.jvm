@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.impl;
 
 import java.nio.charset.StandardCharsets;
 import tech.onega.jvm.std.annotation.NotThreadSafe;

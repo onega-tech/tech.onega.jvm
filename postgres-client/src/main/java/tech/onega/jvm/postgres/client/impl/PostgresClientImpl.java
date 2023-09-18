@@ -1,4 +1,4 @@
-package tech.onega.jvm.postgres.client;
+package tech.onega.jvm.postgres.client.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,6 +12,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTrackerFactory;
 import io.micrometer.core.instrument.MeterRegistry;
+import tech.onega.jvm.postgres.client.domain.PostgresClient;
+import tech.onega.jvm.postgres.client.domain.PostgresConnection;
+import tech.onega.jvm.postgres.client.domain.PostgresModelMapper;
+import tech.onega.jvm.postgres.client.domain.PostgresRecord;
 import tech.onega.jvm.std.annotation.Nullable;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Lambda;

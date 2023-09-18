@@ -2,6 +2,8 @@ package tech.onega.jvm.arangodb.client;
 
 import java.time.Duration;
 import org.testng.annotations.Test;
+import tech.onega.jvm.arangodb.client.domain.ArangoDbClientConfig;
+import tech.onega.jvm.arangodb.client.impl.ArangoDbClientImpl;
 import tech.onega.jvm.std.io.Console;
 
 public class ArangoDbClientImplTest {
