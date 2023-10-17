@@ -13,7 +13,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project-root-dir>${project.basedir}</project-root-dir>
-    <version.java>17</version.java>
+    <version.java>21</version.java>
     <version.maven-compiler-plugin>3.11.0</version.maven-compiler-plugin>
     <version.maven-source-plugin>3.3.0</version.maven-source-plugin>
     <version.maven-deploy-plugin>3.1.1</version.maven-deploy-plugin>
@@ -94,11 +94,6 @@
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${version.spring}</version>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>

@@ -3,7 +3,6 @@ package tech.onega.jvm.std.reflection;
 import java.io.File;
 import java.net.JarURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 import tech.onega.jvm.std.io.FileUtils;
 import tech.onega.jvm.std.struct.set.ISet;
@@ -32,8 +31,8 @@ final public class ClassLoaderUtils {
         final var jarConnection = (JarURLConnection) dirUrl.openConnection();
         for (final var jarEntry : Collections.list(jarConnection.getJarFile().entries())) {
           if (jarEntry.getName().startsWith(dirName) && !jarEntry.getName().endsWith("/") && !jarEntry.isDirectory()) {
-            final var jarEntryUrl = new URL(jarFilePrefix + "!/" + jarEntry.getName());
-            result.add(jarEntryUrl.toURI());
+            final var jarEntryUri = URI.create(jarFilePrefix + "!/" + jarEntry.getName());
+            result.add(jarEntryUri);
           }
         }
       }

@@ -1,0 +1,10 @@
+appenders:
+  console:
+    class: tech.onega.jvm.std.log.appenders.console.ConsoleAppender
+
+loggers:
+  default: info:[console], debug:[console], error:[console]
+  org.testng: debug:[null]
+  org.testcontainers: debug:[null]
+  com.github.dockerjava: debug:[null]
+  tc.: debug:[null]

@@ -5,15 +5,15 @@ import org.testng.annotations.Test;
 import tech.onega.jvm.arangodb.client.impl.ArangoDbClientImpl;
 import tech.onega.jvm.std.io.Console;
 
-public class ArangoDbClientImplTest {
+public class ArangoDbClientImplTest extends ArangoDbClientTestAbstract {
 
   @Test
   void testRnd() throws Exception {
     final var config = new ArangoDbClientImpl.Config(
-      "127.0.0.1",
-      8529,
-      "root",
-      "arangodb",
+      ARANGO_DB_TEST_CONTAINER.getHost(),
+      ARANGO_DB_TEST_CONTAINER.getPort(),
+      ARANGO_DB_TEST_CONTAINER.getUser(),
+      ARANGO_DB_TEST_CONTAINER.getPassword(),
       Duration.ofSeconds(10),
       false,
       true);

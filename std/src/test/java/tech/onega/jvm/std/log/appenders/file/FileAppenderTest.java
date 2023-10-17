@@ -37,7 +37,7 @@ public class FileAppenderTest {
                 DateTime.now(),
                 LogLevel.INFO,
                 new Exception(),
-                String.format("Message from: %s, number: %s", Thread.currentThread().getId(), m),
+                String.format("Message from: %s, number: %s", Thread.currentThread().threadId(), m),
                 IList.empty(),
                 location);
               appender.append(message);
