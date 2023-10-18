@@ -19,7 +19,7 @@
     <version.arangodb>7.1.0</version.arangodb>
   </properties>
 
-  <dependencies>  
+  <dependencies>
 
     <!-- onega [begin] -->
     <dependency>
@@ -32,35 +32,33 @@
     </dependency>
     <!-- onega [end] -->
 
-    <!-- arangoDB [begin]
+    <!-- arangoDB [begin] -->
     <dependency>
       <groupId>com.arangodb</groupId>
-      <artifactId>arangodb-java-driver</artifactId>
-      <version>${version.arangodb}</version>
+      <artifactId>jackson-dataformat-velocypack</artifactId>
+      <version>4.1.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.arangodb</groupId>
+      <artifactId>velocypack</artifactId>
+      <version>3.0.0</version>
+      <exclusions>
         <exclusion>
-        	<groupId>com.fasterxml.jackson.core</groupId>
-        	<artifactId>jackson-annotations</artifactId>
-        </exclusion>
-        <exclusion>
-        	<groupId>com.fasterxml.jackson.core</groupId>
-        	<artifactId>jackson-databind</artifactId>
-        </exclusion>
-        <exclusion>
-        	<groupId>com.fasterxml.jackson.core</groupId>
-        	<artifactId>jackson-core</artifactId>
-        </exclusion>
-        <exclusion>
-        	<groupId>com.arangodb</groupId>
-        	<artifactId>http-protocol</artifactId>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
-   arangoDB [end] -->
+    <!-- arangoDB [end] -->
+
+
 
 
     <!-- testing [begin] -->
@@ -68,15 +66,19 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    
-     <dependency>
+
+    <dependency>
       <groupId>tech.onega.jvm</groupId>
       <artifactId>arangodb-testcontainer</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    
     <!-- testing [end] -->
 
   </dependencies>

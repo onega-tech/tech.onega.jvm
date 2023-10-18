@@ -17,7 +17,7 @@ final public class Check {
 
     private static final long serialVersionUID = 1L;
 
-    InvalidException(String message, Object... args) {
+    InvalidException(final String message, final Object... args) {
       super(message == null ? "Null error message" : String.format(message, args));
     }
 
@@ -27,114 +27,124 @@ final public class Check {
     .buildDefaultValidatorFactory()
     .getValidator();
 
-  public static InvalidException createError(String otherwise, Object... otherwiseArgs) {
+  public static InvalidException createError(final String otherwise, final Object... otherwiseArgs) {
     return new InvalidException(otherwise, otherwiseArgs);
   }
 
-  public static void equals(Object v1, Object v2) throws InvalidException {
+  public static void equals(final Object v1, final Object v2) throws InvalidException {
     equals(v1, v2, "Values:[\n  %s\n  !=  \n  %s\n]", v1, v2);
   }
 
   public static void equals(
-    Object v1,
-    Object v2,
-    String otherwise,
-    Object... otherwiseArgs) throws InvalidException {
+    final Object v1,
+    final Object v2,
+    final Lambda.Supplier<String, RuntimeException> errorMessageFactory) throws InvalidException {
+    //
+    if (Equals.no(v1, v2)) {
+      fail(errorMessageFactory.invoke());
+    }
+  }
+
+  public static void equals(
+    final Object v1,
+    final Object v2,
+    final String otherwise,
+    final Object... otherwiseArgs) throws InvalidException {
     //
     if (Equals.no(v1, v2)) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void fail(String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void fail(final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     throw new InvalidException(otherwise, otherwiseArgs);
   }
 
-  public static void isFalse(boolean value) throws InvalidException {
+  public static void isFalse(final boolean value) throws InvalidException {
     isFalse(value, "Value != false");
   }
 
-  public static void isFalse(boolean value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void isFalse(final boolean value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (value) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void isNull(Object value) throws InvalidException {
+  public static void isNull(final Object value) throws InvalidException {
     isNull(value, "%s != null", value);
   }
 
-  public static void isNull(Object value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void isNull(final Object value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (value != null) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void isNull(Object value, Supplier<String> errorFactory) throws InvalidException {
+  public static void isNull(final Object value, final Supplier<String> errorFactory) throws InvalidException {
     isNull(value, errorFactory.get());
   }
 
-  public static void isTrue(boolean value) throws InvalidException {
+  public static void isTrue(final boolean value) throws InvalidException {
     isTrue(value, "Value != true");
   }
 
-  public static void isTrue(boolean value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void isTrue(final boolean value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (!value) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void isTrue(boolean value, Supplier<String> errorFactory) throws InvalidException {
+  public static void isTrue(final boolean value, final Supplier<String> errorFactory) throws InvalidException {
     isTrue(value, errorFactory.get());
   }
 
-  public static void notBlank(@Nullable String value) throws InvalidException {
+  public static void notBlank(@Nullable final String value) throws InvalidException {
     notBlank(value, "Value is blank");
   }
 
-  public static void notBlank(@Nullable String value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void notBlank(@Nullable final String value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if ((value == null) || value.isBlank()) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void notEmpty(@Nullable Collection<?> vals, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void notEmpty(@Nullable final Collection<?> vals, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if ((vals == null) || (vals.size() <= 0)) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void notEquals(Object v1, Object v2) throws InvalidException {
+  public static void notEquals(final Object v1, final Object v2) throws InvalidException {
     notEquals(v1, v2, "Values are equals:\n  %s\n  %s", v1, v2);
   }
 
-  public static void notEquals(Object v1, Object v2, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void notEquals(final Object v1, final Object v2, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (Equals.yes(v1, v2)) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void notNull(Object value) throws InvalidException {
+  public static void notNull(final Object value) throws InvalidException {
     notNull(value, "Value == null");
   }
 
-  public static void notNull(Object value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void notNull(final Object value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (value == null) {
       fail(otherwise, otherwiseArgs);
     }
   }
 
-  public static void valid(Object value) throws InvalidException {
+  public static void valid(final Object value) throws InvalidException {
     valid(value, "Bean is not valid");
   }
 
-  public static void valid(Object value, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static void valid(final Object value, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     if (value == null) {
       fail("Value can't be null. " + otherwise, otherwiseArgs);
     }
-    var errors = new HashSet<ConstraintViolation<Object>>();
+    final var errors = new HashSet<ConstraintViolation<Object>>();
     if (value instanceof Iterable) {
-      var iterator = ((Iterable<?>) value).iterator();
+      final var iterator = ((Iterable<?>) value).iterator();
       while (iterator.hasNext()) {
         errors.addAll(VALIDATOR.validate(iterator.next()));
         if (!errors.isEmpty()) {
@@ -146,10 +156,10 @@ final public class Check {
       errors.addAll(VALIDATOR.validate(value));
     }
     if (!errors.isEmpty()) {
-      var validateErrors = errors.stream()
+      final var validateErrors = errors.stream()
         .map(v -> v.toString())
         .collect(Collectors.joining("\n"));
-      var otherwiseMessage = String.format(otherwise, otherwiseArgs);
+      final var otherwiseMessage = String.format(otherwise, otherwiseArgs);
       fail("%s \n %s", otherwiseMessage, validateErrors);
     }
   }
@@ -158,46 +168,46 @@ final public class Check {
     return VALIDATOR;
   }
 
-  public static <E extends Throwable> void withThrow(Lambda.Void<E> lambda) throws InvalidException {
+  public static <E extends Throwable> void withThrow(final Lambda.Void<E> lambda) throws InvalidException {
     withThrow(lambda, "No throw");
   }
 
-  public static <E extends Throwable> void withThrow(Lambda.Void<E> lambda, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static <E extends Throwable> void withThrow(final Lambda.Void<E> lambda, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     try {
       lambda.invoke();
       fail(otherwise, otherwiseArgs);
     }
-    catch (Throwable e) {
+    catch (final Throwable e) {
       //ignore
     }
   }
 
-  public static <E extends Throwable> void withThrowType(Class<E> throwType, Lambda.Void<E> lambda) throws InvalidException {
+  public static <E extends Throwable> void withThrowType(final Class<E> throwType, final Lambda.Void<E> lambda) throws InvalidException {
     withThrowType(throwType, lambda, "No throw, or wrong throw type");
   }
 
-  public static <E extends Throwable> void withThrowType(Class<E> throwType, Lambda.Void<E> lambda, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static <E extends Throwable> void withThrowType(final Class<E> throwType, final Lambda.Void<E> lambda, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     try {
       lambda.invoke();
       fail(otherwise, otherwiseArgs);
     }
-    catch (Throwable e) {
+    catch (final Throwable e) {
       if (!throwType.isInstance(e)) {
         fail(otherwise, otherwiseArgs);
       }
     }
   }
 
-  public static <E extends Throwable> void withThrowValue(E throwValue, Lambda.Void<E> lambda) throws InvalidException {
+  public static <E extends Throwable> void withThrowValue(final E throwValue, final Lambda.Void<E> lambda) throws InvalidException {
     withThrowValue(throwValue, lambda, "No throw, or wrong throw are not equals");
   }
 
-  public static <E extends Throwable> void withThrowValue(E throwValue, Lambda.Void<E> lambda, String otherwise, Object... otherwiseArgs) throws InvalidException {
+  public static <E extends Throwable> void withThrowValue(final E throwValue, final Lambda.Void<E> lambda, final String otherwise, final Object... otherwiseArgs) throws InvalidException {
     try {
       lambda.invoke();
       fail(otherwise, otherwiseArgs);
     }
-    catch (Throwable e) {
+    catch (final Throwable e) {
       if (!throwValue.equals(e)) {
         fail(otherwise, otherwiseArgs);
       }

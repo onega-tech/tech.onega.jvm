@@ -1,16 +1,16 @@
 package tech.onega.jvm.postgres.testcontainer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Exec;
+import tech.onega.jvm.std.log.Logger;
+import tech.onega.jvm.std.log.Loggers;
 
 @ThreadSafe
 final public class PostgresTestContainer implements AutoCloseable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PostgresTestContainer.class);
+  private final static Logger LOGGER = Loggers.find(PostgresTestContainer.class);
 
   public static PostgresTestContainer create() {
     return new PostgresTestContainer("postgres:16-alpine");

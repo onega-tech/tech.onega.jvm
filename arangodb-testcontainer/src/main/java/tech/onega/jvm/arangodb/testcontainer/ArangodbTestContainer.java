@@ -1,17 +1,17 @@
 package tech.onega.jvm.arangodb.testcontainer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.Wait;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Exec;
+import tech.onega.jvm.std.log.Logger;
+import tech.onega.jvm.std.log.Loggers;
 
 @ThreadSafe
 final public class ArangodbTestContainer implements AutoCloseable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ArangodbTestContainer.class);
+  private final static Logger LOGGER = Loggers.find(ArangodbTestContainer.class);
 
   public static ArangodbTestContainer create() {
     return new ArangodbTestContainer("arangodb:3.11.4");
@@ -21,6 +21,9 @@ final public class ArangodbTestContainer implements AutoCloseable {
     return new ArangodbTestContainer(dockerImage);
   }
 
+  /**
+   * @see https://docs.arangodb.com/3.11/components/arangodb-server/options/#general
+   */
   private static GenericContainer<?> createContainer(final String dockerImage, final int containerPort, final String password) {
     final var container = new GenericContainer<>(dockerImage);
     container.withEnv("MALLOC_ARENA_MAX", "1");
@@ -30,6 +33,11 @@ final public class ArangodbTestContainer implements AutoCloseable {
     container.withEnv("ARANGO_STORAGE_ENGINE", "rocksdb");
     container.withExposedPorts(containerPort);
     container.withLogConsumer(ArangodbTestContainer::log);
+    container.withCommand(
+      "--log=info",
+      "--database.wait-for-sync=false",
+      "--agency.wait-for-sync=false",
+      "--rocksdb.use-fsync=false");
     container.waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     container.start();
     return container;
