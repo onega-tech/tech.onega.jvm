@@ -1,7 +1,11 @@
-TODO сделать обработку ошибок
-TODO реализовать список API
-TODO добавить к траспорту VILOCITYPACK
-TODO нужно реализовать все модели API Json
-TODO документы мепятся как MAP<String,OBject>
-TODO убрать асинхронщену т.к. курсоры
-TODO инкапсулировать транспортный уровень с загаловками, работать только с моделями
+ * @see https://docs.arangodb.com/3.11/develop/http/general-request-handling/
+ * @see https://github.com/arangodb/arangodb-java-driver/tree/main/http
+
+Нужно составить список API который реально мне нужен
+
+
+1 - работа с БД - просто инфо
+2 - работа с коллекциями - UPDATE, DELETE, LIST, GET
+3 - работа с записями - UPDATE, DELETE, LIST, GET
+4 - работа с индексами - UPDATE, DELETE, LIST, GET
+5 - работа с поиском

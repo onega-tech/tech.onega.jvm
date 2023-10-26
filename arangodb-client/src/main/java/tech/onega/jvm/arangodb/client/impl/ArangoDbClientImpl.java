@@ -8,7 +8,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import tech.onega.jvm.arangodb.client.domain.ArangoDbClient;
 import tech.onega.jvm.arangodb.client.domain.ArangoDbTransport;
-import tech.onega.jvm.arangodb.client.domain.api.ArrangoDbApiDatabaseList;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiCollectionList;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseCreate;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseDrop;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseGet;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseList;
 import tech.onega.jvm.std.annotation.ThreadSafe;
 import tech.onega.jvm.std.lang.Exec;
 import tech.onega.jvm.std.validate.Check;
@@ -63,13 +67,33 @@ public class ArangoDbClientImpl implements ArangoDbClient {
     Exec.quietly(this.transport::close);
   }
 
-  public Config getConfig() {
-    return this.config;
+  @Override
+  public CompletableFuture<ArangoDbApiCollectionList.Response> collectionList(final ArangoDbApiCollectionList.Request request) {
+    return new ArangoDbApiCollectionList().execute(this.transport, request);
   }
 
   @Override
-  public CompletableFuture<ArrangoDbApiDatabaseList.Response> listAllDatabasesAsync() {
-    return new ArrangoDbApiDatabaseList().execute(this.transport, new ArrangoDbApiDatabaseList.Request());
+  public CompletableFuture<ArangoDbApiDatabaseCreate.Response> databaseCreate(final ArangoDbApiDatabaseCreate.Request request) {
+    return new ArangoDbApiDatabaseCreate().execute(this.transport, request);
+  }
+
+  @Override
+  public CompletableFuture<ArangoDbApiDatabaseDrop.Response> databaseDrop(final ArangoDbApiDatabaseDrop.Request request) {
+    return new ArangoDbApiDatabaseDrop().execute(this.transport, request);
+  }
+
+  @Override
+  public CompletableFuture<ArangoDbApiDatabaseGet.Response> databaseGet(final ArangoDbApiDatabaseGet.Request request) {
+    return new ArangoDbApiDatabaseGet().execute(this.transport, request);
+  }
+
+  @Override
+  public CompletableFuture<ArangoDbApiDatabaseList.Response> databaseList() {
+    return new ArangoDbApiDatabaseList().execute(this.transport, new ArangoDbApiDatabaseList.Request());
+  }
+
+  public Config getConfig() {
+    return this.config;
   }
 
 }

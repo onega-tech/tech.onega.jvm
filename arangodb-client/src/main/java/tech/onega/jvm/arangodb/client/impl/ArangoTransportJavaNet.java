@@ -147,7 +147,6 @@ public class ArangoTransportJavaNet implements ArangoDbTransport {
 
   private HttpRequest createHttpRequest(final ArangoDbTransport.Request<?> request) {
     try {
-      Check.valid(request, "Request is not valid");
       final byte[] requestBody = request.body() == null ? null : this.objectMapper.writeValueAsBytes(request.body());
       final var requestBuilder = HttpRequest.newBuilder();
       requestBuilder.uri(URI.create(this.httpServerURI + request.endpoint()));
@@ -181,7 +180,7 @@ public class ArangoTransportJavaNet implements ArangoDbTransport {
 
   @Override
   public <R> CompletableFuture<Response<R>> execute(final ArangoDbTransport.Request<R> request) {
-    final HttpRequest httpRequest = this.createHttpRequest(request);
+    final var httpRequest = this.createHttpRequest(request);
     return this.httpClient
       .sendAsync(httpRequest, responseInfo -> BodySubscribers.ofByteArray())
       .thenApply(httpResponse -> this.createResponse(request, httpRequest, httpResponse));

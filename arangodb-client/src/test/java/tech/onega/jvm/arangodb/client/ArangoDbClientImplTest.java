@@ -3,8 +3,12 @@ package tech.onega.jvm.arangodb.client;
 import java.time.Duration;
 import org.testng.annotations.Test;
 import tech.onega.jvm.arangodb.client.domain.ArangoDbClient;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiCollectionList;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseCreate;
+import tech.onega.jvm.arangodb.client.domain.api.ArangoDbApiDatabaseGet;
 import tech.onega.jvm.arangodb.client.impl.ArangoDbClientImpl;
 import tech.onega.jvm.std.io.Console;
+import tech.onega.jvm.std.struct.list.IList;
 
 public class ArangoDbClientImplTest { // extends ArangoDbClientTestAbstract
 
@@ -35,8 +39,25 @@ public class ArangoDbClientImplTest { // extends ArangoDbClientTestAbstract
   @Test
   void testRnd() throws Exception {
     try (var client = createArangoDbClient()) {
-      for (var i = 0; i < 10; i++) {
-        final var response = client.listAllDatabasesAsync().get();
+      {
+        final var response = client.databaseCreate(new ArangoDbApiDatabaseCreate.Request(
+          "test",
+          null,
+          IList.of(new ArangoDbApiDatabaseCreate.Request.User("root", "", true, null))))
+          .get();
+        //_system
+        Console.errJson(response);
+      }
+      {
+        final var response = client.databaseList().get();
+        Console.errJson(response);
+      }
+      {
+        final var response = client.databaseGet(new ArangoDbApiDatabaseGet.Request("test")).get();
+        Console.errJson(response);
+      }
+      {
+        final var response = client.collectionList(new ArangoDbApiCollectionList.Request("test", true)).get();
         Console.errJson(response);
       }
     }
